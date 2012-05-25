@@ -307,7 +307,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		}
 
 		var sufix = code.substring(pos + 1, length);
-		if (jQuery.inArray(sufix, [ 'AU', 'I', 'P', 'A', 'AV' ])) {
+		if (jQuery.inArray(sufix, ['AU', 'I', 'P', 'A', 'AV'])) {
 			return sufix;
 		}
 	}
@@ -386,9 +386,9 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			groupid : queryString.groupid || null,
 
-			studentid : studentid ? [ studentid ] : [],
+			studentid : studentid ? [studentid] : [],
 
-			unitid : unitid ? [ unitid ] : [],
+			unitid : unitid ? [unitid] : [],
 
 			stateid : null,
 
@@ -690,7 +690,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			log("route ---------------------------- ");
 
-			var views = [ {
+			var views = [{
 				name : "table",
 				callback : ShowTable,
 				excel : true,
@@ -707,7 +707,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				name : "activity",
 				callback : ShowActivity,
 				print : true
-			} ];
+			}];
 
 			if (!state) {
 				state = {};
@@ -922,6 +922,41 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			return cell;
 		}
 
+		function dataExport() {
+
+			var data = '" "';
+
+			for ( var i = 0; i < cols.length; i++) {
+				data += ';"' + cols[i].exportTitle + '"';
+			}
+			data += '\r\n';
+
+			for ( var i = 0; i < rows.length; i++) {
+
+				data += '"' + rows[i].exportTitle + '"';
+
+				for ( var j = 0; j < cols.length; j++) {
+
+					var cell = displayCell(rows[i], cols[j], i, j, true);
+					cell = cell || '';
+
+					if (typeof cell === 'number') {
+						cell = cell.toString();
+					}
+
+					// Low cost localization of numbers
+					cell = cell.replace(".", ",");
+
+					data += ';' + cell + '';
+				}
+
+				data += '\r\n';
+			}
+
+			return data;
+
+		} // dataExport
+
 		function showTable(nop) {
 
 			for ( var i = 0; i < options.unitid.length; i++) {
@@ -949,7 +984,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			$("#submit_excel").unbind().click(function() {
 
-				DataExport("#combo-export textarea[name='table']", cols, rows, displayCell);
+				$("#combo-export textarea[name='table']").val(dataExport());
 
 				$('#combo-export').submit();
 			});
@@ -1006,10 +1041,10 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			book : book,
 			content : content,
 			studentid : studentid,
-			contentUserData : [ {
+			contentUserData : [{
 				user : col.student,
 				grades : ud
-			} ]
+			}]
 		};
 
 		if (row.type === ACTIVITY) {
@@ -1030,8 +1065,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			focus : false,
 			onClose : function(dialog) {
 
-				if (existsFormTouched() && !confirm(t('Confirm lose data'))) {
-					// Solve BUG simplemodal - rebinding the events
+				if (existsFormTouched() && !confirm(t('Confirm unsaved data'))) {
+					// Solve simplemodal bug - rebinding the events
 					this.bindEvents();
 					this.occb = false;
 					this.overlayClose = true;
@@ -1206,7 +1241,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		if (!hasUnit(unit.id, options.unitid)) {
 
 			var loptions = $.extend(true, {}, options);
-			loptions.unitid = [ unit.id ];
+			loptions.unitid = [unit.id];
 
 			GradeManager(loptions, showUnit);
 
@@ -1268,7 +1303,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		if (!hasUnit(activity.unit.id, options.unitid)) {
 
 			var loptions = $.extend(true, {}, options);
-			loptions.unitid = [ activity.unit.id ];
+			loptions.unitid = [activity.unit.id];
 
 			GradeManager(loptions, showActivity);
 
@@ -1444,36 +1479,6 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		}
 
 	} // Table
-
-	function DataExport(id, cols, rows, displayCell) {
-
-		// Students
-		var data = '" "';
-		for ( var i = 0; i < cols.length; i++) {
-			data += ';"' + cols[i].exportTitle + '"';
-		}
-		data += '\r\n';
-
-		for ( var i = 0; i < rows.length; i++) {
-
-			data += '"' + rows[i].exportTitle + '"';
-
-			for ( var j = 0; j < cols.length; j++) {
-
-				var cell = displayCell(rows[i], cols[j], i, j, true);
-				cell = cell || '';
-
-				data += ';"' + cell + '"';
-			}
-
-			data += '\r\n';
-		}
-
-		$(id).val(data);
-
-		return data;
-
-	} // DataExport
 
 	function GradeManager(options, onload) {
 
