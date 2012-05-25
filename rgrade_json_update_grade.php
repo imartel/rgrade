@@ -8,37 +8,33 @@ if(!isloggedin()) {
 	rgrade_json_error('User not logged in');
 }
 
-// 1. Validar curso
 $courseid = optional_param('courseid', '', PARAM_INT);
 if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
 	rgrade_json_error('Course not valid');
 }
 
-// 2. Required grade
 $id = optional_param('id', 0, PARAM_INT);
 if(!$id) {
 	rgrade_json_error('Grade id required');
 }
 
 $grade = get_record('rcontent_grades', 'id', $id);
-if(!$grade){
+if(!$grade) {
 	rgrade_json_error('Grade not valid');
 }
 
 //Somehow required for has_capability to work correctly.
 require_login($courseid, false);
 
-// 3. Capabilities
-$context = get_context_instance(CONTEXT_MODULE, $grade->rcontentid);
-if(!has_capability('mod/rcontent:updatescore', $context)){
-	rgrade_json_error('No capabilities');
+if (!rgrade_check_capability("moodle/grade:edit")) {
+	rgrade_json_error('No capabilities (moodle/grade:edit)');
 }
 
 $txtgrade = optional_param('grade', '', PARAM_TEXT);
 $comments  = optional_param('comments', '', PARAM_CLEANHTML);
 
 $updated = rgrade_update_grade($grade, $txtgrade, $comments);
-if(!$updated){
+if(!$updated) {
 	rgrade_json_error(rgrade_get_string('error_saving_grade', $grade));
 }
 
