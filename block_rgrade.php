@@ -28,7 +28,7 @@ class block_rgrade extends block_base {
 		if(!empty($books)){
 
 			$text .="<label for='fbook'><span>".rgrade_get_string('book')."</span>";
-			$text .="<select name='bookid' id='fbook' class='fbook'>";
+			$text .="<select name='bookid' id='fbook' class='fbook' style='width:140px'>";
 			foreach($books as $book){
 				$text .= "<option value='".$book->id."'>".$book->name."</option>";
 			}
@@ -42,7 +42,7 @@ class block_rgrade extends block_base {
 			if(!empty($groups)) {
 
 				$text .="<label for='fgroup'><span>".rgrade_get_string('group')."</span>";
-				$text .="<select name='groupid' id='fgroup' class='fgroup'>";
+				$text .="<select name='groupid' id='fgroup' class='fgroup' style='width:140px'>";
 				$text .= "<option value=''> -- ".rgrade_get_string('all_groups')." -- </option>";
 
 				foreach($groups as $group){

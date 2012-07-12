@@ -271,7 +271,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <div class="grades-header clearfix">
 	{{#if content}}
 		<div class="content">
-			<em>{{#if unit}}{{I18n "Activity"}}{{else}}{{I18n "Unit"}}{{/if}}</em>
+			<em>{{#if unit}}<span class="activity {{activityType content.code}}">{{I18n "Activity"}}</span>{{else}}{{I18n "Unit"}}{{/if}}</em>
 			<span class="title">{{content.name}}</span>
 		</div>
 	{{/if}}

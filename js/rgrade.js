@@ -41,6 +41,10 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		return formatScore(number);
 	});
 
+	Handlebars.registerHelper('activityType', function(code) {
+		return getActivityType(code);
+	});
+
 	/**
 	 * Logs a message in the console if available.
 	 * 
@@ -307,7 +311,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		}
 
 		var sufix = code.substring(pos + 1, length);
-		if (jQuery.inArray(sufix, ['AU', 'I', 'P', 'A', 'AV'])) {
+		if (jQuery.inArray(sufix, ['AU', 'I', 'P', 'A', 'AV']) != -1) {
 			return sufix;
 		}
 	}
@@ -781,6 +785,9 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			$('#field_unitid').removeAttr('disabled');
 		} else {
 			$('#field_unitid').attr('disabled', 'disabled');
+
+			// Fix BUG Chrome select multiple disabled + option.selected
+			$('#field_unitid option:selected').css("color", "white");
 		}
 
 		if (v.print) {
