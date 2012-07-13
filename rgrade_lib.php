@@ -233,8 +233,8 @@ function rgrade_get_grades($courseid, $bookid, $unitid = null,
 	return get_recordset_sql($sql);
 }
 
-function rgrade_get_counts($courseid, $bookid,
-		$groupid = null, $state = null, $begin = null, $end = null) {
+function rgrade_get_counts($courseid, $bookid, $groupid = null,
+		$studentid = null, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
@@ -258,8 +258,11 @@ function rgrade_get_counts($courseid, $bookid,
 		$sql .= "and g.starttime <= $tend " ;
 	}
 
+	if($studentid && !empty($studentid)){
+		$sql .= _rgrade_add_where_restriction("g.userid", $studentid, "AND");
+	}
 	// Sólo filtramos que el usuario pertenezca al grupo (no rol)
-	if($groupid) {
+	else if($groupid) {
 		$sql .= "AND EXISTS (
 		SELECT gm.userid FROM {$CFG->prefix}groups_members gm
 		WHERE gm.userid = g.userid and gm.groupid = $groupid

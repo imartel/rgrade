@@ -17,12 +17,13 @@ if(!$book) {
 	rgrade_json_error('Book not valid');
 }
 
+$studentid = optional_param('studentid', '', PARAM_INT);
 $groupid = optional_param('groupid', '', PARAM_INT);
 $stateid = optional_param('stateid', '', PARAM_TEXT);
 $begin = optional_param('begin', '', PARAM_TEXT);
 $end = optional_param('end', '', PARAM_TEXT);
 
-$rs = rgrade_get_counts($courseid, $bookid, $groupid, $stateid, $begin, $end);
+$rs = rgrade_get_counts($courseid, $bookid, $groupid, $studentid, $stateid, $begin, $end);
 
 if (!$rs) {
 	rgrade_json_error("Error SQL");

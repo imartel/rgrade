@@ -107,6 +107,8 @@ var I18n = {
 			"View" : "Visualitza",
 			"Unit Report" : "Informe d'unitat",
 			"Save" : "Desa",
+			"Book" : "Llibre",
+			"Reports" : "Informes",
 			"datepicker" : {
 				monthNames : ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Septembre',
 						'Octubre', 'Novembre', 'Decembre'],
@@ -162,6 +164,8 @@ var I18n = {
 			"View" : "Visualiza",
 			"Unit Report" : "Informe de unidad",
 			"Save" : "Guarda",
+			"Book" : "Libro",
+			"Reports" : "Informes",
 			"datepicker" : {
 				closeText : 'Cierra',
 				prevText : '&#x3c;Ant',

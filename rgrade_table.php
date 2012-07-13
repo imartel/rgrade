@@ -156,6 +156,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <div id="back_print_excel">
 <input id="submit_print" type="button" name="print" value="{{I18n "Print"}}" class="button print"/>
 <input id="submit_excel" type="button" name="export" value="{{I18n "Excel Export"}}" class="button excel"/>
+<a id="button_book" href="#view=book" title=""  class="button">{{I18n "Book data"}}</a>
 <input id="submit_back" type="button" name="back" value="{{I18n "Back"}}" class="button back"/>
 </div>
 
@@ -335,8 +336,48 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 </div>
 </script>
 
+<script id="book-template" type="text/x-handlebars-template">
+<div class="book-template">
+	<table>
+		<tr class="book-info">
+			<td><em>{{I18n "Book"}}</em> <span class="book">{{book.name}}</span></td>
+			<td class="count">
+			{{#if book.count}}<em>{{I18n "Reports"}}</em> <span class="num">{{book.count}}</span>
+			{{else}}&nbsp;{{/if}}
+			</td>
+		</tr>
+	</table>
+	{{#each units}}
+		<table class="unit">
+			<tr class="unit-info">
+				<td class="content-type"><em>{{I18n "Unit"}}</em></td>
+				<td><a class="title" href="#view=unit&id={{id}}" title="">{{name}}</a> <em class='code'>({{code}})</em></td>
+				<td class="count">
+				{{#if count}}<em>{{I18n "Reports"}}</em> <span class="num">{{count}}</span>
+				{{else}}&nbsp;{{/if}}
+				</td>
+			</tr>
+			<tr class="unit-activities">
+				<td class="content-type">&nbsp;</td>
+				<td><em>{{I18n "Activities"}}</em></td>
+				<td class="count"><span class="num"><span class="sum-sign">&#8721;</span> {{activities_count}}</span></td>
+			</tr>
+			{{#each activities}}
+				<tr class="activity {{activityType code}}">
+					<td class="content-type">&nbsp;</td>
+					<td><a href="#view=activity&id={{id}}" title="">{{name}}</a></td>
+					<td class="count">{{count}}</td>
+				</tr>
+			{{/each}}
+		</table>
+	{{/each}}
+
+	<div class="book"><span class="book"></span></div>
+</div>
+</script>
+
 <div class="agraiment">
-	Per gentilesa de <a href="http://www.lagaleratext.cat/" target="_blank">Text-LaGalera</a>
+	Per gentilesa de <a href="http://www.lagaleratext.cat/" target="_blank">Text-LaGalera</a> | <a href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf" target="_blank">Manual d'usuari</a>
 </div>
 
 <?php print_footer(); ?>

@@ -702,7 +702,9 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			}, {
 				name : "book",
 				callback : ShowBook,
-				print : true
+				print : true,
+				disable_book : true,
+				disable_score : true
 			}, {
 				name : "unit",
 				callback : ShowUnit,
@@ -794,6 +796,18 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			$('#submit_print').show();
 		} else {
 			$('#submit_print').hide();
+		}
+
+		if (v.disable_book) {
+			$('#button_book').hide();
+		} else {
+			$('#button_book').show();
+		}
+
+		if (v.disable_score) {
+			$('#report_extended_score_fs').hide();
+		} else {
+			$('#report_extended_score_fs').show();
 		}
 	}
 
@@ -1203,8 +1217,98 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		$("#combo").html("<p>NO DATA</p>");
 	}
 
-	function ShowBook(hash, reload) {
-		$("#combo").html("<p>Book</p>");
+	function ShowBook(args, forceReload, onload) {
+
+		function showBook(gradeManager) {
+
+			var book_args = {
+				"courseid" : courseid,
+				"bookid" : bookid,
+				"groupid" : options.groupid || "",
+				"begin" : options.begin || "",
+				"end" : options.end || "",
+				"stateid" : options.stateid || "",
+				"studentid" : options.studentid
+			};
+
+			jQuery.getJSON("rgrade_json_counts.php", book_args, function(data) {
+
+				if (data.error) {
+					log("Error: " + data.message);
+					return;
+				}
+
+				var templateData = {
+					"book" : {
+						name : book.name
+					},
+					"units" : []
+				};
+				for ( var unit in data) {
+
+					if (unit == 0) {
+						templateData['book']['count'] = data[unit][0];
+
+					} else {
+
+						var content = unitsIndex[unit];
+						if (!content) {
+							continue;
+						}
+
+						var unitData = {
+							"id" : unit,
+							"name" : content['name'],
+							"code" : content['code'],
+							"activities_count" : 0,
+							"activities" : []
+						};
+
+						for ( var activity in data[unit]) {
+
+							if (activity == 0 && data[unit][0] != 0) {
+								unitData['count'] = data[unit][0];
+							}
+
+							else {
+
+								var content = activitiesIndex[activity];
+								if (!content) {
+									continue;
+								}
+
+								var activityData = {
+									"id" : activity,
+									"name" : content['name'],
+									"code" : content['code'],
+									"count" : data[unit][activity]
+								};
+
+								unitData['activities_count'] += data[unit][activity];
+
+								unitData['activities'].push(activityData);
+							}
+						}
+
+						templateData['units'].push(unitData);
+					}
+				}
+
+				$("#combo").handlebars($('#book-template'), templateData);
+
+				if (onload) {
+					onload();
+				}
+			});
+		}
+
+		var dataCallback = showBook;
+
+		if (!gradeManager || forceReload) {
+			gradeManager = GradeManager(options, dataCallback);
+		} else {
+			dataCallback(gradeManager);
+		}
 	}
 
 	function ShowUnit(args, forceReload, onload) {
