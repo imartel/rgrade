@@ -430,6 +430,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 	var view = null;
 
+	var currentView = null;
+
 	if (studentid) {
 		$('body').addClass('student');
 	}
@@ -758,6 +760,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 				if (v.name === state.view) {
 
+					currentView = v;
+
 					v.callback(state, reload, function() {
 
 						$("#footer").show();
@@ -787,10 +791,10 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			$('#field_unitid').removeAttr('disabled');
 		} else {
 			$('#field_unitid').attr('disabled', 'disabled');
-
-			// Fix BUG Chrome select multiple disabled + option.selected
-			$('#field_unitid option:selected').css("color", "white");
 		}
+
+		// Fix BUG Chrome color option selected in select multiple disabled
+		$('#field_unitid option').css("color", v.enable_unit ? "" : "#ccc");
 
 		if (v.print) {
 			$('#submit_print').show();
@@ -1047,9 +1051,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			return false;
 		}
 
-		var ud = contentUserData[content.id][col.student.id];
-
-		if (emptySubArray(ud, "attempts")) {
+		if (emptySubArray(contentUserData[content.id][col.student.id], "attempts")) {
 			return false;
 		}
 
@@ -1057,25 +1059,62 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			return true;
 		}
 
-		var data = {
+		var data = dataLayerGrades(contentUserData, content, col.student);
+		if (data && row.type === ACTIVITY) {
+			data.unit = content.unit;
+		}
+
+		openLayerGrades(data, null);
+	}
+
+	function gradeOnClick(contentid, studentid, type, args) {
+
+		if (type === ACTIVITY) {
+
+			contentUserData = gradeManager.activityUserData;
+			content = activitiesIndex[contentid];
+
+		} else if (type === UNIT) {
+
+			contentUserData = gradeManager.unitUserData;
+			content = unitsIndex[contentid];
+
+		} else {
+			return false;
+		}
+
+		var data = dataLayerGrades(contentUserData, content, studentsIndex[studentid]);
+		openLayerGrades(data, args);
+	}
+
+	function dataLayerGrades(contentUserData, content, student) {
+
+		if (!content || emptySubArray(contentUserData, content.id)) {
+			return null;
+		}
+
+		var ud = contentUserData[content.id][student.id];
+		if (emptySubArray(ud, "attempts")) {
+			return null;
+		}
+
+		return {
 			scoreid : options.scoreid,
 			book : book,
 			content : content,
 			studentid : studentid,
 			contentUserData : [{
-				user : col.student,
+				user : student,
 				grades : ud
 			}]
 		};
-
-		if (row.type === ACTIVITY) {
-			data.unit = content.unit;
-		}
-
-		openLayerGrades(data);
 	}
 
-	function openLayerGrades(data) {
+	function openLayerGrades(data, args) {
+
+		if (!data) {
+			return;
+		}
 
 		var reload = false;
 
@@ -1085,6 +1124,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			overlayClose : true,
 			focus : false,
 			onClose : function(dialog) {
+
+				log("onClose dialog, reload: " + reload);
 
 				if (existsFormTouched() && !confirm(t('Confirm unsaved data'))) {
 					// Solve simplemodal bug - rebinding the events
@@ -1096,12 +1137,20 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 				$.modal.close();
 
-				if (reload) {
-					ShowTable(null, true, function() {
-					});
+				if (reload && currentView) {
+					log("Reload view " + currentView.name);
+					currentView.callback(args, true, function() {});
 				}
 
 			}
+		});
+
+		// Solve simplemodal bug - rebinding handler
+		$('#layer-grades').on('click', '.simplemodal-close', function(e) {
+			log("Closing simpleModal ...");
+			$.modal.close();
+
+			return false;
 		});
 
 		/*
@@ -1160,7 +1209,6 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		 * Submit de todos los formularios
 		 */
 		$("#submit_save").click(function() {
-
 			if (!existsFormTouched()) {
 				return;
 			}
@@ -1189,20 +1237,21 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 						return;
 					}
 
-					// Actualizar TD.state
-					form.find('td.state').html("<span class='" + data.status + "'>" + t(data.status) + "</span>");
-
 					// Reset touch
 					touch(form, '');
 
 					reload = true;
 
-					// Todos los formularios se han enviado OK si
-					// !existsFormTouched
+					// Los formularios se han enviado OK si !existsFormTouched
 					if (!existsFormTouched()) {
+						log("Cerrando después del save");
+
+						if (reload && currentView) {
+							log("Reload view " + currentView.name);
+							currentView.callback(args, true, function() {});
+						}
+
 						$.modal.close();
-						ShowTable(null, true, function() {
-						});
 					}
 				});
 
@@ -1217,9 +1266,59 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		$("#combo").html("<p>NO DATA</p>");
 	}
 
+	function toogleTableInfo(element) {
+
+		$("#rgrade_table ." + element.attr("rel")).toggle();
+		element.toggleClass("less");
+
+		return false;
+	}
+
 	function ShowBook(args, forceReload, onload) {
 
-		function showBook(gradeManager) {
+		function templateDataUnit(data, templateData, unit) {
+
+			var content = unitsIndex[unit];
+			if (!content) {
+				return;
+			}
+
+			var unitData = {
+				"id" : unit,
+				"name" : content['name'],
+				"code" : content['code'],
+				"activities_count" : 0,
+				"activities" : []
+			};
+
+			for ( var activity in data[unit]) {
+
+				// Unidad
+				if (activity == 0 && data[unit][0] != 0) {
+					unitData['count'] = data[unit][0];
+				} else {
+					var content = activitiesIndex[activity];
+					if (!content) {
+						continue;
+					}
+
+					var activityData = {
+						"id" : activity,
+						"name" : content['name'],
+						"code" : content['code'],
+						"count" : data[unit][activity]
+					};
+
+					unitData['activities_count'] += data[unit][activity];
+
+					unitData['activities'].push(activityData);
+				}
+			}
+
+			templateData['units'].push(unitData);
+		}
+
+		function showBook() {
 
 			var book_args = {
 				"courseid" : courseid,
@@ -1244,71 +1343,35 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 					},
 					"units" : []
 				};
+
 				for ( var unit in data) {
 
-					if (unit == 0) {
+					if (unit == 0) { // Book
 						templateData['book']['count'] = data[unit][0];
 
 					} else {
-
-						var content = unitsIndex[unit];
-						if (!content) {
-							continue;
-						}
-
-						var unitData = {
-							"id" : unit,
-							"name" : content['name'],
-							"code" : content['code'],
-							"activities_count" : 0,
-							"activities" : []
-						};
-
-						for ( var activity in data[unit]) {
-
-							if (activity == 0 && data[unit][0] != 0) {
-								unitData['count'] = data[unit][0];
-							}
-
-							else {
-
-								var content = activitiesIndex[activity];
-								if (!content) {
-									continue;
-								}
-
-								var activityData = {
-									"id" : activity,
-									"name" : content['name'],
-									"code" : content['code'],
-									"count" : data[unit][activity]
-								};
-
-								unitData['activities_count'] += data[unit][activity];
-
-								unitData['activities'].push(activityData);
-							}
-						}
-
-						templateData['units'].push(unitData);
+						templateDataUnit(data, templateData, unit);
 					}
 				}
 
 				$("#combo").handlebars($('#book-template'), templateData);
 
+				$(".book-template span.expand").click(function() {
+					return toogleTableInfo($(this));
+				});
+
 				if (onload) {
 					onload();
 				}
 			});
+
+			if (forceReload) {
+				log("Invalidating Grademanager");
+				gradeManager = null;
+			}
 		}
 
-		var dataCallback = showBook;
-
-		if (!gradeManager || forceReload) {
-			gradeManager = GradeManager(options, dataCallback);
-		} else {
-			dataCallback(gradeManager);
-		}
+		showBook();
 	}
 
 	function ShowUnit(args, forceReload, onload) {
@@ -1320,6 +1383,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			unitData.book = book;
 			unitData.activities = [];
+			unitData.isUnit = true;
 
 			// Intentos por actividad
 			for ( var i = 0; i < unit.activities.length; i++) {
@@ -1334,6 +1398,19 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			}
 
 			$("#combo").handlebars($('#unit-template'), unitData);
+
+			$('#combo').on('click', 'a.grade-edit', function(e) {
+
+				var queryString = $.deparam.querystring($(this).attr("href"));
+
+				gradeOnClick(queryString['contentid'], queryString['userid'], queryString['type'], args);
+
+				return false;
+			});
+
+			$(".unit-template span.expand").click(function() {
+				return toogleTableInfo($(this));
+			});
 
 			if (onload) {
 				onload();
@@ -1356,8 +1433,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			GradeManager(loptions, showUnit);
 
-			dataCallback = function nop() {
-			};
+			dataCallback = function nop() {};
 
 		} else {
 
@@ -1397,6 +1473,15 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			$("#combo").handlebars($('#activity-template'), data);
 
+			$('#combo').on('click', 'a.grade-edit', function(e) {
+
+				var queryString = $.deparam.querystring($(this).attr("href"));
+
+				gradeOnClick(queryString['contentid'], queryString['userid'], queryString['type'], args);
+
+				return false;
+			});
+
 			if (onload) {
 				onload();
 			}
@@ -1418,8 +1503,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			GradeManager(loptions, showActivity);
 
-			dataCallback = function nop() {
-			};
+			dataCallback = function nop() {};
 
 		} else {
 

@@ -248,7 +248,13 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 			{{#each grades.attempts}}
 				<table>
 				<tr class="firstline">
-					<td class="attempt"><em>{{I18n "Attempt"}} {{attempt}}</em></td>
+					<td class="attempt">
+					{{#if ../../isUnit}}
+					<a href="?type=UNIT&contentid={{../../../content.id}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
+					{{else}}
+					<a href="?type=ACTIVITY&contentid={{activityid}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
+					{{/if}}
+					</td>
 					<td class="starttime">{{formatDate starttime}}</td>
 					<td class="totaltime">{{formatDuration totaltime}}</td>
 					<td class="grade">{{formatScore grade}}</td>
@@ -315,21 +321,31 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 	</div>
 
 	{{#if contentUserData}}
-		<div class="subtitle"><em>{{I18n "Unit Report"}}</em></div>
-		{{> contentGrades}}
+		<div class="unit-grades titol-code clearfix">
+			<span class="expand less" rel="grades-unit-{{content.id}}">&nbsp;</span>
+			<h2>{{content.name}}</h2>
+			<div class="code2">{{content.code}}</div>
+		</div>
+		<div class="grades-unit-{{content.id}}">{{> contentGrades}}</div>
 	{{/if}}
 
 	
 	{{#if activities}}
 	<div class="subtitle"><em>{{I18n "Activities"}}</em></div>
-	<div class="grades grades-unit-activities">
+	<div class="grades">
 		{{#each activities}}
+			{{#if contentUserData}}
 			<div class="unit-activity">
-				<div class="titol-code clearfix"><h2>{{content.name}}</h2>
-				<div class="code2">{{content.code}}</div>
+				<div class="titol-code clearfix">
+					<span class="expand less" rel="grades-activity-{{content.id}}">&nbsp;</span>
+					<h2><span class="activity {{activityType content.code}}">{{content.name}}</h2>
+					<div class="code2">{{content.code}}</div>
 				</div>
-				{{> contentGrades}}
+			<div class="grades-activity-{{content.id}}">
+			{{> contentGrades}}
 			</div>
+			</div>
+			{{/if}}
 		{{/each}}
 	</div>
 	{{/if}}
@@ -350,7 +366,9 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 	{{#each units}}
 		<table class="unit">
 			<tr class="unit-info">
-				<td class="content-type"><em>{{I18n "Unit"}}</em></td>
+				<td class="content-type">
+				{{#if activities}}<span class="expand less" rel="unit-{{id}}">&nbsp;</span>{{/if}}
+				<em>{{I18n "Unit"}}</em></td>
 				<td><a class="title" href="#view=unit&id={{id}}" title="">{{name}}</a> <em class='code'>({{code}})</em></td>
 				<td class="count">
 				{{#if count}}<em>{{I18n "Reports"}}</em> <span class="num">{{count}}</span>
@@ -363,7 +381,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 				<td class="count"><span class="num"><span class="sum-sign">&#8721;</span> {{activities_count}}</span></td>
 			</tr>
 			{{#each activities}}
-				<tr class="activity {{activityType code}}">
+				<tr class="activity unit-{{../id}} {{activityType code}}">
 					<td class="content-type">&nbsp;</td>
 					<td><a href="#view=activity&id={{id}}" title="">{{name}}</a></td>
 					<td class="count">{{count}}</td>
@@ -377,7 +395,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 </script>
 
 <div class="agraiment">
-	Per gentilesa de <a href="http://www.lagaleratext.cat/" target="_blank">Text-LaGalera</a> | <a href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf" target="_blank">Manual d'usuari</a>
+	Per gentilesa de <a href="http://www.lagaleratext.cat/" class="lagalera" target="_blank">Text-LaGalera</a> | <a href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf" target="_blank">Manual d'usuari</a>
 </div>
 
 <?php print_footer(); ?>

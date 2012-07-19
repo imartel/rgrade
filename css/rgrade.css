@@ -140,7 +140,7 @@ div.code,.user-info {
 	clear: both;
 }
 
-.blocks-rgrade .grades-header .content,.blocks-rgrade .unit-activity .titol-code h2
+.blocks-rgrade .grades-header .content,.blocks-rgrade .unit-activity .titol-code h2,.blocks-rgrade .unit-grades.titol-code h2
 	{
 	float: left;
 }
@@ -155,7 +155,7 @@ div.code,.user-info {
 	text-align: right;
 }
 
-.blocks-rgrade .unit-activity div.code2,.blocks-rgrade .unit-activity div.code2
+.blocks-rgrade .unit-activity div.code2,.blocks-rgrade .unit-activity div.code2,.blocks-rgrade .unit-grades.titol-code div.code2
 	{
 	text-align: right;
 }
@@ -193,7 +193,7 @@ div.code,.user-info {
 
 .blocks-rgrade .titol-code h2 {
 	margin: 0;
-	padding: 4px 0 4px 80px;
+	padding: 4px 0 4px 18px;
 }
 
 .blocks-rgrade .user-info * {
@@ -653,10 +653,6 @@ div.code,.user-info {
 	padding: 0 3px;
 }
 
-#rgrade_search select[multiple][disabled] option {
-	color: black;
-}
-
 .blocks-rgrade .clickable,.blocks-rgrade .button {
 	cursor: pointer;
 }
@@ -713,6 +709,14 @@ div.code,.user-info {
 }
 
 .blocks-rgrade .agraiment a {
+	color: #333;
+}
+
+.blocks-rgrade .agraiment a:hover {
+	color: #B6392E;
+}
+
+.blocks-rgrade .agraiment a.lagalera {
 	color: #FF0033;
 	font-weight: bold;
 }
@@ -830,4 +834,29 @@ a.button.disabled {
 	color: black;
 	font-weight: bold;
 	font-size: 20px;
+}
+
+#rgrade_table span.expand {
+	background: url(masomenos.png) no-repeat -16px 0px;
+	width: 15px;
+	display: block;
+	float: left;
+}
+
+#rgrade_table span.expand.less {
+	background-position: -66px 0px;
+}
+
+#rgrade_table span.expand:hover {
+	cursor: pointer;
+}
+
+.blocks-rgrade .unit-activity .titol-code .expand,.blocks-rgrade .unit-grades.titol-code .expand
+	{
+	float: left;
+	margin-left: 10px;
+}
+
+.blocks-rgrade .unit-activity .titol-code .expand {
+	margin-left: 50px;
 }
