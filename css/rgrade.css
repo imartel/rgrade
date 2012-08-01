@@ -665,7 +665,6 @@ div.code,.user-info {
 	position: absolute;
 	background-color: transparent;
 	box-shadow: -7px 0 5px -5px #ccc inset;
-	width: 10px;
 	height: 100%;
 	right: 0;
 	z-index: 1;
@@ -859,4 +858,8 @@ a.button.disabled {
 
 .blocks-rgrade .unit-activity .titol-code .expand {
 	margin-left: 50px;
+}
+
+#rgrade_table .top {
+	background-color: white;
 }

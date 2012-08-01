@@ -764,6 +764,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 					v.callback(state, reload, function() {
 
+						scrollTableHeader();
+
 						$("#footer").show();
 						$("div.agraiment").show();
 					});
@@ -778,6 +780,33 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		// Procesamos el estado inicial
 		$(window).hashchange();
 	});
+
+	function scrollTableHeader() {
+
+		var tableHeader = $('#rgrade_table .top');
+
+		if (tableHeader.size() == 0) {
+			return;
+		}
+
+		var originalTop = tableHeader.offset().top;
+
+		$(window).scroll(function() {
+
+			var scrollTop = $(window).scrollTop();
+			var position = tableHeader.css("position");
+
+			if (scrollTop > originalTop && position != 'fixed') {
+				tableHeader.css("top", "0");
+				tableHeader.css("position", "fixed");
+			}
+
+			else if (scrollTop <= originalTop && position == 'fixed') {
+				tableHeader.css("position", "static");
+			}
+		});
+
+	}
 
 	function callbackUpdateSearch(v) {
 
