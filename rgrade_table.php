@@ -450,7 +450,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 			<tr class="firstline">
 				<td class="attempt">
 				{{#if ../unit}}
-				<a href="?type=UNIT&contentid={{../id}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
+				<a href="?type=UNIT&contentid={{../../id}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
 				{{else}}
 				<a href="?type=ACTIVITY&contentid={{activityid}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
 				{{/if}}
