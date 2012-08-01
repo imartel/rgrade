@@ -359,6 +359,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			// Register partials
 			Handlebars.registerPartial("headerGrades", $("#header-grades-partial").html());
+			Handlebars.registerPartial("grades", $("#grades-partial").html());
 			Handlebars.registerPartial("contentGrades", $("#content-grades-partial").html());
 			Handlebars.registerPartial("contentGradesEdit", $("#content-grades-edit-partial").html());
 
@@ -718,7 +719,11 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			}, {
 				name : "student",
 				callback : ShowStudent,
-				print : true
+				print : true,
+				enable_unit : true,
+				disable_student : true,
+				disable_group : true
+
 			}];
 
 			if (!state) {
@@ -842,6 +847,18 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			$('#report_extended_score_fs').hide();
 		} else {
 			$('#report_extended_score_fs').show();
+		}
+
+		if (v.disable_student) {
+			$('#field_studentid').attr('disabled', 'disabled');
+		} else {
+			$('#field_studentid').removeAttr('disabled');
+		}
+
+		if (v.disable_group) {
+			$('#field_groupid').attr('disabled', 'disabled');
+		} else {
+			$('#field_groupid').removeAttr('disabled');
 		}
 	}
 
@@ -1100,12 +1117,10 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 	function gradeOnClick(contentid, studentid, type, args) {
 
 		if (type === ACTIVITY) {
-
 			contentUserData = gradeManager.activityUserData;
 			content = activitiesIndex[contentid];
 
 		} else if (type === UNIT) {
-
 			contentUserData = gradeManager.unitUserData;
 			content = unitsIndex[contentid];
 
@@ -1719,10 +1734,62 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		function showStudent(gradeManager) {
 
 			var data = {
-				user : student
+				user : student,
+				scoreid : options.scoreid,
+				book : {
+					id : book.id,
+					name : book.name,
+					units : []
+				}
+			};
+
+			for ( var uid in gradeManager.unitUserData) {
+
+				var u = getIndex(unitsIndex, uid);
+
+				var unit = {
+					id : u.id,
+					unit : true,
+					name : u.name,
+					code : u.code,
+					grades : gradeManager.unitUserData[uid][student.id],
+					activities : []
+				};
+
+				for ( var i = 0; i < u.activities.length; i++) {
+					var a = u.activities[i];
+
+					if (!gradeManager.activityUserData[a.id] || !gradeManager.activityUserData[a.id][student.id]) {
+						continue;
+					}
+
+					unit.activities.push({
+						id : a.id,
+						name : a.name,
+						code : a.code,
+						grades : gradeManager.activityUserData[a.id][student.id]
+					});
+				}
+
+				if (!emptySubArray(unit.grades, 'attempts') || !emptyArray(unit.activities)) {
+					data.book.units.push(unit);
+				}
 			}
 
 			$("#combo").handlebars($('#student-template'), data);
+
+			$('#combo').on('click', 'a.grade-edit', function(e) {
+
+				var queryString = $.deparam.querystring($(this).attr("href"));
+
+				gradeOnClick(queryString['contentid'], queryString['userid'], queryString['type'], args);
+
+				return false;
+			});
+
+			$(".unit-template span.expand").click(function() {
+				return toogleTableInfo($(this));
+			});
 
 			if (onload) {
 				onload();

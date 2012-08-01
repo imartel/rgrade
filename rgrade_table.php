@@ -71,7 +71,9 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 </div>
 
 <form id="combo-export" method="post" action="rgrade_export.php">
-	<div><textarea name="table"></textarea></div>
+	<div>
+		<textarea name="table"></textarea>
+	</div>
 </form>
 
 <script id="search-template" type="text/x-handlebars-template">
@@ -245,34 +247,35 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 		</div>
 
 		<div class="grades">
-			{{#each grades.attempts}}
-				<table>
-				<tr class="firstline">
-					<td class="attempt">
-					{{#if ../../isUnit}}
-					<a href="?type=UNIT&contentid={{../../../content.id}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
-					{{else}}
-					<a href="?type=ACTIVITY&contentid={{activityid}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
-					{{/if}}
-					</td>
-					<td class="starttime">{{formatDate starttime}}</td>
-					<td class="totaltime">{{formatDuration totaltime}}</td>
-					<td class="grade">{{formatScore grade}}</td>
-					<td class="state"><span class="{{status}}">{{I18n status}}</span></td>
-					<td class="url">{{#if urlviewresults}}<a href="{{urlviewresults}}" target="_blank" title="">{{I18n "View"}}</a>{{/if}}</td>
-				</tr>
-				{{#if comments}}
-				<tr class="secondline">
-					<td class="icon">&nbsp;</td>
-					<td colspan="5" class="comments">{{{comments}}}</td>
-				</tr>
+		{{#each grades.attempts}}
+			<table>
+			<tr class="firstline">
+				<td class="attempt">
+				{{#if ../../isUnit}}
+				<a href="?type=UNIT&contentid={{../../../content.id}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
+				{{else}}
+				<a href="?type=ACTIVITY&contentid={{activityid}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
 				{{/if}}
-				</table>				
-			{{/each}}			
-		</div>
+				</td>
+				<td class="starttime">{{formatDate starttime}}</td>
+				<td class="totaltime">{{formatDuration totaltime}}</td>
+				<td class="grade">{{formatScore grade}}</td>
+				<td class="state"><span class="{{status}}">{{I18n status}}</span></td>
+				<td class="url">{{#if urlviewresults}}<a href="{{urlviewresults}}" target="_blank" title="">{{I18n "View"}}</a>{{/if}}</td>
+			</tr>
+			{{#if comments}}
+			<tr class="secondline">
+				<td class="icon">&nbsp;</td>
+				<td colspan="5" class="comments">{{{comments}}}</td>
+			</tr>
+			{{/if}}
+			</table>
+		{{/each}}
+	</div>
 	</div>
 {{/each}}
 </script>
+
 
 <script id="header-grades-partial" type="text/x-handlebars-template">
 <div class="grades-header clearfix">
@@ -397,19 +400,84 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 
 <script id="student-template" type="text/x-handlebars-template">
 <div class="student-template">
-	<div class="grades-content">
-		<div class="user-info">
-			<img alt="" class="userpicture" src="css/no-foto.jpg" />
-			<h2 class="name">{{user.lastname}} {{user.firstname}}</h2>
-			{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}
+	<div class="user-info">
+		<h2 class="name">{{user.lastname}} {{user.firstname}}</h2>
+	</div>
+
+	{{#each book.units}}
+
+	<div class="unit-template">
+	<div class="grades-header clearfix">
+		<div class="content">
+		<span class="expand less" rel="grades-unit-{{id}}">&nbsp;</span>
+		<em>{{I18n "Unit"}}</em>&nbsp;&nbsp;&nbsp;<span class="title">{{name}}</span>
 		</div>
-	</student>
+		<div class="code2">{{code}}</div>
+	</div>
+
+	<div class="grades-unit grades-unit-{{id}}">
+		{{#if grades.attempts}}
+			{{> grades}}
+		{{/if}}
+
+		{{#each activities}}
+			{{#if grades.attempts}}
+			<div class="unit-activity">
+				<div class="titol-code clearfix">
+					<h2><span class="activity {{activityType code}}">{{name}}</h2>
+					{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}			
+				</div>
+				<em class="code">{{code}}</em>
+				{{> grades}}
+			</div>
+			{{/if}}
+		{{/each}}
+	</div> <!-- .grades-unit -->
+
+	</div> <!-- .unit-template -->
+
+	{{/each}}
 </div>
 
 </script>
 
+
+<script id="grades-partial" type="text/x-handlebars-template">
+	<div class="grades-content">
+	<div class="grades">
+		{{#each grades.attempts}}
+			<table>
+			<tr class="firstline">
+				<td class="attempt">
+				{{#if ../unit}}
+				<a href="?type=UNIT&contentid={{../id}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
+				{{else}}
+				<a href="?type=ACTIVITY&contentid={{activityid}}}&userid={{userid}}" class="grade-edit"><em>{{I18n "Attempt"}} {{attempt}}</em></a>
+				{{/if}}
+				</td>
+				<td class="starttime">{{formatDate starttime}}</td>
+				<td class="totaltime">{{formatDuration totaltime}}</td>
+				<td class="grade">{{formatScore grade}}</td>
+				<td class="state"><span class="{{status}}">{{I18n status}}</span></td>
+				<td class="url">{{#if urlviewresults}}<a href="{{urlviewresults}}" target="_blank" title="">{{I18n "View"}}</a>{{/if}}</td>
+			</tr>
+			{{#if comments}}
+			<tr class="secondline">
+				<td class="icon">&nbsp;</td>
+				<td colspan="5" class="comments">{{{comments}}}</td>
+			</tr>
+			{{/if}}
+			</table>
+		{{/each}}
+	</div>
+	</div>
+</script>
+
 <div class="agraiment">
-	Per gentilesa de <a href="http://www.lagaleratext.cat/" class="lagalera" target="_blank">Text-LaGalera</a> | <a href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf" target="_blank">Manual d'usuari</a>
+	Per gentilesa de <a href="http://www.lagaleratext.cat/"
+		class="lagalera" target="_blank">Text-LaGalera</a> | <a
+		href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf"
+		target="_blank">Manual d'usuari</a>
 </div>
 
 <?php print_footer(); ?>
