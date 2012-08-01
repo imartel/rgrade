@@ -763,9 +763,6 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 					currentView = v;
 
 					v.callback(state, reload, function() {
-
-						scrollTableHeader();
-
 						$("#footer").show();
 						$("div.agraiment").show();
 					});
@@ -1127,7 +1124,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			return null;
 		}
 
-		return {
+		var data = {
 			scoreid : options.scoreid,
 			book : book,
 			content : content,
@@ -1137,6 +1134,12 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				grades : ud
 			}]
 		};
+
+		if (content.unit) {
+			data.unit = content.unit;
+		}
+
+		return data;
 	}
 
 	function openLayerGrades(data, args) {
@@ -1681,6 +1684,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		$(".data-wrapper").scroll(function(e) {
 			w1.scrollLeft($(this).scrollLeft());
 		});
+
+		scrollTableHeader();
 
 		if (onClick) {
 
