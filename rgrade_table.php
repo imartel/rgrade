@@ -394,6 +394,20 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 </div>
 </script>
 
+
+<script id="student-template" type="text/x-handlebars-template">
+<div class="student-template">
+	<div class="grades-content">
+		<div class="user-info">
+			<img alt="" class="userpicture" src="css/no-foto.jpg" />
+			<h2 class="name">{{user.lastname}} {{user.firstname}}</h2>
+			{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}
+		</div>
+	</student>
+</div>
+
+</script>
+
 <div class="agraiment">
 	Per gentilesa de <a href="http://www.lagaleratext.cat/" class="lagalera" target="_blank">Text-LaGalera</a> | <a href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf" target="_blank">Manual d'usuari</a>
 </div>

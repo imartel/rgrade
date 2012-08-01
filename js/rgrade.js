@@ -715,6 +715,10 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				name : "activity",
 				callback : ShowActivity,
 				print : true
+			}, {
+				name : "student",
+				callback : ShowStudent,
+				print : true
 			}];
 
 			if (!state) {
@@ -1625,7 +1629,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		var row_header = '';
 
 		for ( var i = 0; i < cols.length; i++) {
-			row_header += '<td>' + cols[i].title + '</td>';
+			row_header += '<td><a class="partial" href="#view=student&amp;id=' + cols[i].student.id + '">'
+					+ cols[i].title + '</a></td>';
 		}
 
 		var p2 = '</tr></tbody></table></div></div>';
@@ -1708,6 +1713,38 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		}
 
 	} // Table
+
+	function ShowStudent(args, forceReload, onload) {
+
+		function showStudent(gradeManager) {
+
+			var data = {
+				user : student
+			}
+
+			$("#combo").handlebars($('#student-template'), data);
+
+			if (onload) {
+				onload();
+			}
+		}
+
+		var student = getIndex(studentsIndex, args.id);
+
+		if (!student) {
+			showNoData();
+			return;
+		}
+
+		var dataCallback = showStudent;
+
+		if (!gradeManager || forceReload) {
+			gradeManager = GradeManager(options, dataCallback);
+		} else {
+			dataCallback(gradeManager);
+		}
+
+	}
 
 	function GradeManager(options, onload) {
 
