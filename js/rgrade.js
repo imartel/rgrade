@@ -1261,7 +1261,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		 */
 		$("#submit_save").click(function() {
 			if (!existsFormTouched()) {
-				return;
+				return false;
 			}
 
 			var button = $(this);
@@ -1285,7 +1285,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 					if (data.error) {
 						alert(data.message);
-						return;
+						return false;
 					}
 
 					// Reset touch
