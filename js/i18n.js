@@ -109,6 +109,7 @@ var I18n = {
 			"Save" : "Desa",
 			"Book" : "Llibre",
 			"Reports" : "Informes",
+			"Book data" : "Informes llibre",
 			"datepicker" : {
 				monthNames : ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Septembre',
 						'Octubre', 'Novembre', 'Decembre'],
@@ -166,6 +167,7 @@ var I18n = {
 			"Save" : "Guarda",
 			"Book" : "Libro",
 			"Reports" : "Informes",
+			"Book data" : "Informes libro",
 			"datepicker" : {
 				closeText : 'Cierra',
 				prevText : '&#x3c;Ant',

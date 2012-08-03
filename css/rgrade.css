@@ -35,7 +35,7 @@ html {
 	font-size: 18px;
 }
 
-#layer-grades .grades-header .unit-book span.book,.blocks-rgrade .grades-header .unit-book
+#layer-grades .grades-header .unit-book span.book,.blocks-rgrade .grades-header .unit-book, #rgrade_table .student-template .user-info h2.name
 	{
 	font-size: 20px;
 }
@@ -52,7 +52,7 @@ html {
 	font-size: 28px;
 }
 
-.blocks-rgrade .grades-header .unit-book {
+.blocks-rgrade .grades-header .unit-book, #rgrade_table .student-template .user-info h2.name {
 	font-weight: bold;
 }
 
@@ -120,7 +120,7 @@ h1.headermain {
 	font-weight: bold;
 }
 
-.blocks-rgrade #rgrade_table tr.unit.main td,.blocks-rgrade .grades-header .unit-book
+.blocks-rgrade #rgrade_table tr.unit.main td,.blocks-rgrade .grades-header .unit-book, #rgrade_table .student-template .user-info h2.name
 	{
 	color: black;
 }
@@ -184,8 +184,12 @@ div.code,.user-info {
 	margin-left: -4px;
 }
 
-.blocks-rgrade #combo .grades-content {
+.blocks-rgrade #combo .grades-content, .blocks-rgrade .unit-activity .titol-code{
 	margin-left: 36px;
+}
+
+.blocks-rgrade #combo .activity-template .grades-content{
+	margin-left: 0px;
 }
 
 .blocks-rgrade .grades-content {
@@ -700,13 +704,27 @@ div.code,.user-info {
 	background-position: left -525px;
 }
 
+#layer-grades .grades-header em span.activity.A,#layer-grades .grades-header em span.activity.AV
+	{
+	background-position: left -522px;
+}
+
 .blocks-rgrade tr.I a,.blocks-rgrade tr.AU a,.blocks-rgrade .grades-header em span.activity.I,.blocks-rgrade .grades-header em span.activity.AU
 	{
 	background-position: left -461px;
 }
 
-.blocks-rgrade tr.P a,.blocks-rgrade .grades-header em span.activity.P {
+#layer-grades .grades-header em span.activity.I,#layer-grades .grades-header em span.activity.AU
+	{
+	background-position: left -458px;
+}
+
+.blocks-rgrade tr.P a,.blocks-rgrade .grades-header em span.activity.P,.blocks-rgrade .grades-header em span.activity.P {
 	background-position: left -494px;
+}
+
+#layer-grades .grades-header em span.activity.P {
+	background-position: left -491px;
 }
 
 .blocks-rgrade .agraiment {
@@ -720,7 +738,7 @@ div.code,.user-info {
 }
 
 .blocks-rgrade .agraiment a:hover {
-	color: #B6392E;
+	color: black;
 }
 
 .blocks-rgrade .agraiment a.lagalera {
@@ -863,27 +881,21 @@ a.button.disabled {
 	float: left;
 	margin-left: 10px;
 }
-
+/*
 .blocks-rgrade .unit-activity .titol-code .expand {
 	margin-left: 50px;
-}
+}*/
 
 #rgrade_table .top {
 	background-color: white;
 }
 
-.blocks-rgrade .student-template .grades-unit {
-	margin-left: 60px;
+.blocks-rgrade .student-template .grades-unit .unit-activity{
+	margin-left: 36px;
 }
 
 .blocks-rgrade .student-template .unit-activity .titol-code {
-	margin-bottom: 0px;
-}
-
-#rgrade_table .student-template .user-info h2.name {
-	font-size: 26px;
-	color: black;
-	margin-left:5px;
+	margin: 0px;
 }
 
 #rgrade_table .student-template .user-info {
@@ -894,4 +906,8 @@ a.button.disabled {
 #rgrade_table #combo .student-template .grades-header {
 	border-bottom: 2px solid #999;
 	padding-bottom: 0px;
+}
+
+#button_book:hover {
+	text-decoration: none;
 }

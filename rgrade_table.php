@@ -158,7 +158,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <div id="back_print_excel">
 <input id="submit_print" type="button" name="print" value="{{I18n "Print"}}" class="button print"/>
 <input id="submit_excel" type="button" name="export" value="{{I18n "Excel Export"}}" class="button excel"/>
-<!-- <a id="button_book" href="#view=book" title=""  class="button">{{I18n "Book data"}}</a> -->
+<a id="button_book" href="#view=book" title=""  class="button">{{I18n "Book data"}}</a>
 <input id="submit_back" type="button" name="back" value="{{I18n "Back"}}" class="button back"/>
 </div>
 
@@ -279,15 +279,15 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 
 <script id="header-grades-partial" type="text/x-handlebars-template">
 <div class="grades-header clearfix">
+	<div class="unit-book">
+		{{#if book}}<span class="book">{{book.name}}</span>{{/if}} {{#if unit}}/ <span class="unit">{{unit.name}}</span> {{/if}}
+	</div>
 	{{#if content}}
 		<div class="content">
 			<em>{{#if unit}}<span class="activity {{activityType content.code}}">{{I18n "Activity"}}</span>{{else}}{{I18n "Unit"}}{{/if}}</em>
 			<span class="title">{{content.name}}</span>
 		</div>
-	{{/if}}
-	<div class="unit-book">
-		{{#if book}}<span class="book">{{book.name}}</span>{{/if}} {{#if unit}}/ <span class="unit">{{unit.name}}</span> {{/if}}
-	</div>
+	{{/if}}	
 	<hr/>
 	{{#if content}}<div class="code">{{content.code}}</div>{{/if}}
 </div>
@@ -310,17 +310,12 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <script id="unit-template" type="text/x-handlebars-template">
 <div class="unit-template">
 	<div class="grades-header clearfix">
-		<div class="content">
-		{{#if content}}
-			<em>{{I18n "Unit"}}</em> <span class="title">{{content.name}}</span>
-		{{/if}}
-		</div>
-
 		{{#if book.name}}
-		<div class="unit-book">
-			<span class="book">{{book.name}}</span>
-		</div>
+			<div class="unit-book"><span class="book">{{book.name}}</span></div>
 		{{/if}}
+		{{#if content}}
+			<div class="content"><em>{{I18n "Unit"}}</em> <span class="title">{{content.name}}</span></div>
+		{{/if}}		
 	</div>
 
 	{{#if contentUserData}}
@@ -334,7 +329,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 
 	
 	{{#if activities}}
-	<div class="subtitle"><em>{{I18n "Activities"}}</em></div>
+	<div class="subtitle activities"><em>{{I18n "Activities"}}</em></div>
 	<div class="grades">
 		{{#each activities}}
 			{{#if contentUserData}}
@@ -401,6 +396,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <script id="student-template" type="text/x-handlebars-template">
 <div class="student-template">
 	<div class="user-info">
+		<img alt="" class="userpicture" src="css/no-foto.jpg" />
 		<h2 class="name">{{user.lastname}} {{user.firstname}}</h2>
 	</div>
 
@@ -420,18 +416,22 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 			{{> grades}}
 		{{/if}}
 
-		{{#each activities}}
-			{{#if grades.attempts}}
-			<div class="unit-activity">
-				<div class="titol-code clearfix">
-					<h2><span class="activity {{activityType code}}">{{name}}</h2>
-					{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}			
+
+		{{#if activities}}
+			<div class="subtitle activities"><em>{{I18n "Activities"}}</em></div>
+			{{#each activities}}
+				{{#if grades.attempts}}
+				<div class="unit-activity">
+					<div class="titol-code clearfix">
+						<h2><span class="activity {{activityType code}}">{{name}}</h2>
+						{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}			
+					</div>
+					<em class="code">{{code}}</em>
+					{{> grades}}
 				</div>
-				<em class="code">{{code}}</em>
-				{{> grades}}
-			</div>
-			{{/if}}
-		{{/each}}
+				{{/if}}
+			{{/each}}
+		{{/if}}
 	</div> <!-- .grades-unit -->
 
 	</div> <!-- .unit-template -->
