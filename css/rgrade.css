@@ -32,10 +32,10 @@ html {
 
 #layer-grades .grades-header .content span,.blocks-rgrade #rgrade_table tr.unit.main td,.blocks-rgrade .grades-header .title,#rgrade_table .book-template .unit-info .title
 	{
-	font-size: 18px;
+	font-size: 18 px;
 }
 
-#layer-grades .grades-header .unit-book span.book,.blocks-rgrade .grades-header .unit-book, #rgrade_table .student-template .user-info h2.name
+#layer-grades .grades-header .unit-book span.book,.blocks-rgrade .grades-header .unit-book,#rgrade_table .student-template .user-info h2.name
 	{
 	font-size: 20px;
 }
@@ -52,7 +52,8 @@ html {
 	font-size: 28px;
 }
 
-.blocks-rgrade .grades-header .unit-book, #rgrade_table .student-template .user-info h2.name {
+.blocks-rgrade .grades-header .unit-book,#rgrade_table .student-template .user-info h2.name
+	{
 	font-weight: bold;
 }
 
@@ -120,7 +121,7 @@ h1.headermain {
 	font-weight: bold;
 }
 
-.blocks-rgrade #rgrade_table tr.unit.main td,.blocks-rgrade .grades-header .unit-book, #rgrade_table .student-template .user-info h2.name
+.blocks-rgrade #rgrade_table tr.unit.main td,.blocks-rgrade .grades-header .unit-book,#rgrade_table .student-template .user-info h2.name
 	{
 	color: black;
 }
@@ -184,11 +185,12 @@ div.code,.user-info {
 	margin-left: -4px;
 }
 
-.blocks-rgrade #combo .grades-content, .blocks-rgrade .unit-activity .titol-code{
+.blocks-rgrade #combo .grades-content,.blocks-rgrade .unit-activity .titol-code
+	{
 	margin-left: 36px;
 }
 
-.blocks-rgrade #combo .activity-template .grades-content{
+.blocks-rgrade #combo .activity-template .grades-content {
 	margin-left: 0px;
 }
 
@@ -387,7 +389,8 @@ div.code,.user-info {
 	border: 0;
 }
 
-.blocks-rgrade .button,#layer-grades .simplemodal-close {
+.blocks-rgrade .button,#layer-grades .simplemodal-close,#layer-unit_message .button
+	{
 	border-radius: 4px;
 	padding: 4px 8px;
 	text-transform: uppercase;
@@ -504,7 +507,7 @@ div.code,.user-info {
 }
 
 /* Simplemodal */
-#layer-grades {
+#layer-grades,#layer-unit_message {
 	display: none;
 }
 
@@ -513,12 +516,15 @@ div.code,.user-info {
 }
 
 #simplemodal-container {
-	height: 400px;
-	width: 800px;
 	padding: 12px;
 	background-color: white;
 	box-shadow: 0px 0px 20px black;
 	border-radius: 3px;
+}
+
+#layer-grades {
+	height: 400px;
+	width: 800px;
 }
 
 #simplemodal-container .grades {
@@ -719,7 +725,8 @@ div.code,.user-info {
 	background-position: left -458px;
 }
 
-.blocks-rgrade tr.P a,.blocks-rgrade .grades-header em span.activity.P,.blocks-rgrade .grades-header em span.activity.P {
+.blocks-rgrade tr.P a,.blocks-rgrade .grades-header em span.activity.P,.blocks-rgrade .grades-header em span.activity.P
+	{
 	background-position: left -494px;
 }
 
@@ -885,12 +892,11 @@ a.button.disabled {
 .blocks-rgrade .unit-activity .titol-code .expand {
 	margin-left: 50px;
 }*/
-
 #rgrade_table .top {
 	background-color: white;
 }
 
-.blocks-rgrade .student-template .grades-unit .unit-activity{
+.blocks-rgrade .student-template .grades-unit .unit-activity {
 	margin-left: 36px;
 }
 
@@ -908,6 +914,24 @@ a.button.disabled {
 	padding-bottom: 0px;
 }
 
-#button_book:hover {
+.blocks-rgrade #button_book:hover {
 	text-decoration: none;
+}
+
+.blocks-rgrade #layer-unit_message {
+	width: 300px;
+	padding: 10px;
+	font-family: sans-serif;
+	font-size: 12px;
+	color: #444;
+}
+
+.blocks-rgrade #layer-unit_message form {
+	margin-top: 10px;
+}
+
+#layer-unit_message	.container-button {
+	text-align: center;
+	display: block;
+	padding-top: 10px;
 }

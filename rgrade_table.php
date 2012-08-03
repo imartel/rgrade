@@ -29,6 +29,7 @@ require_js(array(
 		$jspath.'/jquery-1.7.1.min.js',
 		$jspath.'/jquery.ba-bbq.js',
 		$jspath.'/handlebars-1.0.0.beta.6.js', $jspath.'/i18n.js', $jspath.'/css.js',
+		$jspath.'/jquery.cookie.js',
 		$jspath.'/jquery.simplemodal.1.4.2.min.js'));
 
 $csspath = $CFG->wwwroot.'/blocks/rgrade/css';
@@ -171,8 +172,8 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 	
 	var courseid = "<?php echo $courseid; ?>";
 	var bookid = "<?php echo $bookid; ?>";
-	
-	var unitid = "<?php echo $unitid; ?>";
+
+	var unitid = <?php echo json_encode($unitid); ?>;
 	var studentid = "<?php echo $studentid; ?>";  
 </script>
 
@@ -472,6 +473,17 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 	</div>
 	</div>
 </script>
+
+<div id="layer-unit_message">
+<span>Les dades que es visualitzen corresponen a les de les dues darreres unitats per a les quals hi ha hagut activitat. Per a seleccionar una altra unitat, cal usar el selector d'unitats.</span>
+<form id="form_hide_unit_msg" action="#"> 
+	<input type="checkbox" id="hide_msg" value="1" name="hide_msg"/>
+	<label for="hide_msg"><strong>No vull tornar a veure l'avís.</strong></label>
+	<div class="container-button">
+	<input type="submit" class="button" name="ok" value="Accepta"/>
+	</div>
+</form>
+</div>
 
 <div class="agraiment">
 	Per gentilesa de <a href="http://www.lagaleratext.cat/"

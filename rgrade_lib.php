@@ -195,7 +195,7 @@ function rgrade_get_time($sDate){
  * @param string $end
  */
 function rgrade_get_grades($courseid, $bookid, $unitid = null,
-		$groupid = null, $userid, $state = null, $begin = null, $end = null) {
+$groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
@@ -234,7 +234,7 @@ function rgrade_get_grades($courseid, $bookid, $unitid = null,
 }
 
 function rgrade_get_counts($courseid, $bookid, $groupid = null,
-		$studentid = null, $state = null, $begin = null, $end = null) {
+$studentid = null, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
@@ -313,23 +313,41 @@ function rgrade_last_unit_with_grades($courseid, $bookid, $groupid = null) {
 		return null;
 	}
 
-	$toreturn = null;
+
+	$toreturn = array(2);
 
 	while($unit = rs_fetch_next_record($rs)) {
-
-		if(!$toreturn || $toreturn->sortorder < $unit->sortorder){
-			$toreturn = $unit;
+		if(!$toreturn[0]){
+			$toreturn[0] = $unit;
+			continue;
 		}
 
+		if(!$toreturn[1]){
+			$toreturn[1] = $unit;
+			continue;
+		}
+
+		$o0 = $toreturn[0]->sortorder;
+		$o1 = $toreturn[1]->sortorder;
+
+		$toreturn[($o0 < $o1) ? 0 : 1] = $unit;
 	}
 
 	rs_close($rs);
 
-	if (!$toreturn) {
-		return null;
+	if(!$toreturn[0]){
+		return array();
 	}
 
-	return $toreturn->id;
+	if(!$toreturn[1]){
+		return array($toreturn[0]->id);
+	}
+
+	if($toreturn[0]->sortorder > $toreturn[1]->sortorder){
+		return array($toreturn[1]->id, $toreturn[0]->id);
+	}
+
+	return array($toreturn[0]->id, $toreturn[1]->id);
 }
 
 /**
