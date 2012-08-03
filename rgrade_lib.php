@@ -195,7 +195,7 @@ function rgrade_get_time($sDate){
  * @param string $end
  */
 function rgrade_get_grades($courseid, $bookid, $unitid = null,
-$groupid = null, $userid, $state = null, $begin = null, $end = null) {
+		$groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
@@ -234,7 +234,7 @@ $groupid = null, $userid, $state = null, $begin = null, $end = null) {
 }
 
 function rgrade_get_counts($courseid, $bookid, $groupid = null,
-$studentid = null, $state = null, $begin = null, $end = null) {
+		$studentid = null, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 

@@ -480,34 +480,32 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		});
 
 		// Define onchange group
-		$("#field_groupid").change(
-				function() {
+		$("#field_groupid").change(function() {
 
-					var selectOptions = "";
+			var selectOptions = "";
 
-					function addUserOption(u) {
-						selectOptions += "<option value='" + u.id + "'>" + u.lastname + " " + u.firstname
-								+ "</option>";
-					}
+			function addUserOption(u) {
+				selectOptions += "<option value='" + u.id + "'>" + u.lastname + " " + u.firstname + "</option>";
+			}
 
-					options.groupid = $(this).val();
+			options.groupid = $(this).val();
 
-					if (!options.groupid) {
+			if (!options.groupid) {
 
-						for ( var i = 0; i < students.length; i++) {
-							addUserOption(students[i]);
-						}
+				for ( var i = 0; i < students.length; i++) {
+					addUserOption(students[i]);
+				}
 
-					} else {
+			} else {
 
-						var uids = groupsIndex[options.groupid].studentids;
-						for ( var i = 0; i < uids.length; i++) {
-							addUserOption(studentsIndex[uids[i]]);
-						}
-					}
+				var uids = groupsIndex[options.groupid].studentids;
+				for ( var i = 0; i < uids.length; i++) {
+					addUserOption(studentsIndex[uids[i]]);
+				}
+			}
 
-					$('#field_studentid').html(selectOptions);
-				});
+			$('#field_studentid').html(selectOptions);
+		});
 
 		$("#submit1, #submit2").click(function() {
 
@@ -937,10 +935,9 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				var activity = activities[i];
 
 				rows.push({
-					title : "<a class='partial' href='#view=activity&amp;id=" + activity.id + "'>"
-							+ activity.name + "</a>",
-					exportTitle : safe_export_replace(activity.name) + " ("
-							+ safe_export_replace(activity.code) + ")",
+					title : "<a class='partial' href='#view=activity&amp;id=" + activity.id + "'>" + activity.name
+							+ "</a>",
+					exportTitle : safe_export_replace(activity.name) + " (" + safe_export_replace(activity.code) + ")",
 					activity : activity,
 					css : "activity " + getActivityType(activity.code),
 					type : ACTIVITY
@@ -1073,10 +1070,9 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				var student = studentsIndex[sid];
 
 				cols.push({
-					title : "<p class='lastname'>" + safe_tags_replace(student.lastname)
-							+ "</p><p class='name'>" + safe_tags_replace(student.firstname) + "</p>",
-					exportTitle : safe_export_replace(student.lastname) + " "
-							+ safe_export_replace(student.firstname),
+					title : "<p class='lastname'>" + safe_tags_replace(student.lastname) + "</p><p class='name'>"
+							+ safe_tags_replace(student.firstname) + "</p>",
+					exportTitle : safe_export_replace(student.lastname) + " " + safe_export_replace(student.firstname),
 					student : student
 				});
 			});
@@ -1790,8 +1786,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				for ( var i = 0; i < u.activities.length; i++) {
 					var a = u.activities[i];
 
-					if (!gradeManager.activityUserData[a.id]
-							|| !gradeManager.activityUserData[a.id][student.id]) {
+					if (!gradeManager.activityUserData[a.id] || !gradeManager.activityUserData[a.id][student.id]) {
 						continue;
 					}
 
