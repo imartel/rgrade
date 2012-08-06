@@ -195,7 +195,7 @@ function rgrade_get_time($sDate){
  * @param string $end
  */
 function rgrade_get_grades($courseid, $bookid, $unitid = null,
-		$groupid = null, $userid, $state = null, $begin = null, $end = null) {
+$groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
@@ -234,7 +234,7 @@ function rgrade_get_grades($courseid, $bookid, $unitid = null,
 }
 
 function rgrade_get_counts($courseid, $bookid, $groupid = null,
-		$studentid = null, $state = null, $begin = null, $end = null) {
+$studentid = null, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
@@ -276,15 +276,15 @@ function rgrade_get_counts($courseid, $bookid, $groupid = null,
 
 /**
  *
- * Devuelve el id de la unidad con orden mayor de los últimos N grades
- * de un curso, libro y opcionalmente grupo.
+ * Devuelve un array con los id de la unidades con orden mayor de los últimos
+ * 100 grades de un curso, libro y opcionalmente grupo.
  *
  * @param int $courseid
  * @param int $bookid
  * @param int $groupid
  *
  */
-function rgrade_last_unit_with_grades($courseid, $bookid, $groupid = null) {
+function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 
 	global $CFG;
 
@@ -313,26 +313,36 @@ function rgrade_last_unit_with_grades($courseid, $bookid, $groupid = null) {
 		return null;
 	}
 
-
-	$toreturn = array(2);
+	$toreturn = array();
 
 	while($unit = rs_fetch_next_record($rs)) {
+
+		$oU = $unit->sortorder;
+
 		if(!$toreturn[0]){
 			$toreturn[0] = $unit;
 			continue;
 		}
 
-		if(!$toreturn[1]){
+		$o0 = $toreturn[0]->sortorder;
+		if($o0 == $oU){
+			continue;
+		}
+
+		if(!$toreturn[1]){;
 			$toreturn[1] = $unit;
 			continue;
 		}
 
-		$o0 = $toreturn[0]->sortorder;
 		$o1 = $toreturn[1]->sortorder;
+		if($o1 == $oU){
+			continue;
+		}
 
-		$toreturn[($o0 < $o1) ? 0 : 1] = $unit;
+		if($oU > $o0 || $oU > $o1){
+			$toreturn[($o0 < $o1) ? 0 : 1] = $unit;
+		}
 	}
-
 	rs_close($rs);
 
 	if(!$toreturn[0]){
@@ -343,7 +353,14 @@ function rgrade_last_unit_with_grades($courseid, $bookid, $groupid = null) {
 		return array($toreturn[0]->id);
 	}
 
-	if($toreturn[0]->sortorder > $toreturn[1]->sortorder){
+	$o0 = $toreturn[0]->sortorder;
+	$o1 = $toreturn[1]->sortorder;
+
+	if($o0 == $o1){
+		return array($toreturn[0]->id);
+	}
+
+	if($o0 > $o1){
 		return array($toreturn[1]->id, $toreturn[0]->id);
 	}
 

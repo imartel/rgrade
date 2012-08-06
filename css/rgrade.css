@@ -146,6 +146,11 @@ div.code,.user-info {
 	float: left;
 }
 
+.blocks-rgrade .unit-activity .titol-code h2,.blocks-rgrade .unit-grades.titol-code h2
+	{
+	width: 60%
+}
+
 .blocks-rgrade .unit-activity div.code2,.blocks-rgrade .student-template div.code2
 	{
 	float: right;

@@ -19,6 +19,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 	var BOOK_COVERAGE = 'BOOK_COVERAGE';
 
+	var COOKIE_NAME = "hideUnitMessage";
+
 	// Inicializar idiomas
 	I18n.init({
 		lang : language
@@ -771,8 +773,6 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 					currentView = v;
 
 					v.callback(state, reload, function() {
-						showUnitMessage();
-
 						$("#footer").show();
 						$("div.agraiment").show();
 					});
@@ -786,31 +786,9 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 		// Procesamos el estado inicial
 		$(window).hashchange();
+
+		alertUnitsTable();
 	});
-
-	function showUnitMessage() {
-
-		var cookieName = "hideUnitMessage";
-
-		if ($.cookie(cookieName)) {
-			return false;
-		}
-
-		$("#layer-unit_message").modal({
-			overlayClose : true,
-			minHeight : 140
-		});
-
-		$("#form_hide_unit_msg").submit(function() {
-
-			if ($("#hide_msg").is(':checked')) {
-				$.cookie(cookieName, true);
-			}
-
-			$.modal.close();
-			return false;
-		});
-	}
 
 	function scrollTableHeader() {
 
@@ -837,6 +815,28 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			}
 		});
 
+	}
+
+	function alertUnitsTable() {
+
+		if (view != 'table' || $.cookie(COOKIE_NAME)) {
+			return false;
+		}
+
+		$("#layer-unit_message").modal({
+			overlayClose : true,
+			minHeight : 140
+		});
+
+		$("#form_hide_unit_msg").submit(function() {
+
+			if ($("#hide_msg").is(':checked')) {
+				$.cookie(COOKIE_NAME, true);
+			}
+
+			$.modal.close();
+			return false;
+		});
 	}
 
 	function callbackUpdateSearch(v) {

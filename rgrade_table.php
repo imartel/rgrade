@@ -52,7 +52,7 @@ print_header($page_title, $title, build_navigation($navlinks));
 
 $groupid = optional_param('groupid', '', PARAM_INT);
 
-$unitid = rgrade_last_unit_with_grades($courseid, $bookid, $groupid);
+$unitid = rgrade_last_units_with_grades($courseid, $bookid, $groupid);
 
 $studentid = null;
 
@@ -475,12 +475,12 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 </script>
 
 <div id="layer-unit_message">
-<span>Les dades que es visualitzen corresponen a les de les dues darreres unitats per a les quals hi ha hagut activitat. Per a seleccionar una altra unitat, cal usar el selector d'unitats.</span>
+<span><?php echo rgrade_get_string('alert_units_table');?></span>
 <form id="form_hide_unit_msg" action="#"> 
 	<input type="checkbox" id="hide_msg" value="1" name="hide_msg"/>
-	<label for="hide_msg"><strong>No vull tornar a veure l'avís.</strong></label>
+	<label for="hide_msg"><strong><?php echo rgrade_get_string('alert_units_table_hide');?></strong></label>
 	<div class="container-button">
-	<input type="submit" class="button" name="ok" value="Accepta"/>
+	<input type="submit" class="button" name="ok" value="<?php echo rgrade_get_string('alert_units_table_ok');?>"/>
 	</div>
 </form>
 </div>
