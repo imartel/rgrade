@@ -488,7 +488,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <div class="agraiment">
 	Per gentilesa de <a href="http://www.lagaleratext.cat/"
 		class="lagalera" target="_blank">Text-LaGalera</a> | <a
-		href="https://projectes.lafarga.cat/projects/marsupial/downloads/docs/view/744/manual_modul_120601.pdf"
+		href="http://projecteeso.lagaleratext.cat/static/llibres/moodle/manual_modul_120601.pdf"
 		target="_blank">Manual d'usuari</a>
 </div>
 
