@@ -10,6 +10,8 @@ if(!$courseid) {
 	rgrade_json_error("Course required");
 }
 
+$schoolid = required_param('schoolid');
+
 $course = get_record('course', 'id', $courseid);
 if(!$course) {
 	rgrade_json_error("Course does not exists: $courseid");
@@ -25,7 +27,7 @@ $data = array();
 
 $data['students'] = array();
 
-$rs = rgrade_get_all_students($courseid);
+$rs = rgrade_get_all_students($schoolid, $courseid);
 while($student = rs_fetch_next_record($rs)) {
 
 	$sid = (int) $student->id;
@@ -40,7 +42,7 @@ rs_close($rs);
 
 $data['groups'] = array();
 
-$rs = rgrade_get_groups_studentsid($courseid);
+$rs = rgrade_get_groups_studentsid($schoolid, $courseid);
 while($group = rs_fetch_next_record($rs)) {
 
 	$gid = (int) $group->groupid;

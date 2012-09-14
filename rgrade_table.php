@@ -7,17 +7,24 @@ require_once('rgrade_lib.php');
 $CFG->javascript = "javascript.php";
 
 $courseid = required_param('courseid', PARAM_INT);
-$bookid = required_param('bookid', PARAM_INT);
+$schoolid = required_param('schoolid');
 
 $course = get_record('course', 'id', $courseid);
 if(!$course) {
 	error('Course not valid');
 }
 
-$book = rgrade_get_book_from_course($courseid, $bookid);
+$rcontent = get_record('rcontent','course', $course->id);
+if(!$rcontent) {
+	error('Rcontent not valid');
+}
+
+$book = rgrade_get_book_from_course($course->id, $rcontent->bookid);
 if(!$book) {
 	error('Book not valid');
 }
+
+$bookid = $book->id;
 
 require_login($course->id, false);
 
@@ -52,7 +59,7 @@ print_header($page_title, $title, build_navigation($navlinks));
 
 $groupid = optional_param('groupid', '', PARAM_INT);
 
-$unitid = rgrade_last_units_with_grades($courseid, $bookid, $groupid);
+$unitid = rgrade_last_units_with_grades($schoolid, $courseid, $bookid, $groupid);
 
 $studentid = null;
 
@@ -172,6 +179,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 	
 	var courseid = "<?php echo $courseid; ?>";
 	var bookid = "<?php echo $bookid; ?>";
+	var schoolid = "<?php echo $schoolid; ?>";
 
 	var unitid = <?php echo json_encode($unitid); ?>;
 	var studentid = "<?php echo $studentid; ?>";  

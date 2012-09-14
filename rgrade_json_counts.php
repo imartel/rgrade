@@ -6,6 +6,7 @@ require_once('rgrade_lib.php');
 
 $courseid = optional_param('courseid', '', PARAM_INT);
 $bookid = optional_param('bookid', '', PARAM_INT);
+$schoolid = required_param('schoolid');
 
 if(!$courseid || !$course = get_record('course', 'id', $courseid)) {
 	rgrade_json_error('Course not valid');
@@ -23,7 +24,7 @@ $stateid = optional_param('stateid', '', PARAM_TEXT);
 $begin = optional_param('begin', '', PARAM_TEXT);
 $end = optional_param('end', '', PARAM_TEXT);
 
-$rs = rgrade_get_counts($courseid, $bookid, $groupid, $studentid, $stateid, $begin, $end);
+$rs = rgrade_get_counts($schoolid, $courseid, $bookid, $groupid, $studentid, $stateid, $begin, $end);
 
 if (!$rs) {
 	rgrade_json_error("Error SQL");

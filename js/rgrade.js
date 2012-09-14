@@ -3,7 +3,7 @@
  * 
  * unitid = array con las 2 últimas unidades con seguimiento
  */
-function Rgrade(courseid, bookid, unitid, studentid) {
+function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 
 	var ACTIVITY = 'ACTIVITY';
 
@@ -373,7 +373,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		return I18n.t(key);
 	};
 
-	var url = 'rgrade_json_data.php' + window.location.search;
+	var url = 'rgrade_json_data.php?schoolid=' + schoolid + '&courseid=' + courseid + '&bookid=' + bookid;
 
 	var options = null;
 
@@ -487,7 +487,8 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			var selectOptions = "";
 
 			function addUserOption(u) {
-				selectOptions += "<option value='" + u.id + "'>" + u.lastname + " " + u.firstname + "</option>";
+				var txt = (u.firstname || u.lastname) ? u.lastname + " " + u.firstname : u.id;
+				selectOptions += "<option value='" + u.id + "'>" + txt + "</option>";
 			}
 
 			options.groupid = $(this).val();
@@ -1069,10 +1070,19 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 				var student = studentsIndex[sid];
 
+				if (student.firstname || student.lastname) {
+					var txt = "<p class='lastname'>" + safe_tags_replace(student.lastname) + "</p><p class='name'>"
+							+ safe_tags_replace(student.firstname) + "</p>";
+					var txtExport = safe_export_replace(student.lastname) + " "
+							+ safe_export_replace(student.firstname);
+				} else {
+					var txt = "<p class='lastname'>" + student.id + "</p>";
+					var txtExport = student.id;
+				}
+
 				cols.push({
-					title : "<p class='lastname'>" + safe_tags_replace(student.lastname) + "</p><p class='name'>"
-							+ safe_tags_replace(student.firstname) + "</p>",
-					exportTitle : safe_export_replace(student.lastname) + " " + safe_export_replace(student.firstname),
+					title : txt,
+					exportTitle : txtExport,
 					student : student
 				});
 			});
@@ -1306,7 +1316,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				}
 
 				var formData = form.serialize();
-				formData += "&courseid=" + courseid;
+				formData += "&schoolid=" + schoolid + "&courseid=" + courseid;
 
 				$.post("rgrade_json_update_grade.php", formData, function(data) {
 
@@ -1399,6 +1409,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 		function showBook() {
 
 			var book_args = {
+				"schoolid" : schoolid,
 				"courseid" : courseid,
 				"bookid" : bookid,
 				"groupid" : options.groupid || "",
@@ -2027,6 +2038,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 			}
 
 			var grades_pars = {
+				"schoolid" : schoolid,
 				"courseid" : courseid,
 				"bookid" : bookid,
 				"unitid[]" : options.unitid,
@@ -2073,5 +2085,5 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 	} // GradeManager
 };
 
-// Parámetros mínimos: curso y libro
-Rgrade(courseid, bookid, unitid, studentid);
+// Parámetros mínimos: curso, school y libro
+Rgrade(schoolid, courseid, bookid, unitid, studentid);

@@ -10,6 +10,7 @@ if(!isloggedin()) {
 
 $courseid = optional_param('courseid', '', PARAM_INT);
 $bookid = optional_param('bookid', '', PARAM_INT);
+$schoolid = required_param('schoolid');
 
 if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
 	rgrade_json_error('Course not valid');
@@ -44,7 +45,7 @@ $end = optional_param('end', '', PARAM_TEXT);
 
 // 2. Load Grades
 $rs = rgrade_get_grades(
-		$courseid, $bookid, $unitid, $groupid, $studentid, $stateid, $begin, $end);
+		$schoolid, $courseid, $bookid, $unitid, $groupid, $studentid, $stateid, $begin, $end);
 
 if (!$rs){
 	rgrade_json_error("Error SQL");

@@ -96,12 +96,13 @@ function _rgrade_get_rol_student_restriction($courseid){
  *
  * @param int $courseid
  */
-function rgrade_get_all_students($courseid){
+function rgrade_get_all_students($schoolid, $courseid){
 
 	global $CFG;
 
 	$sql = "SELECT u.id, u.lastname, u.firstname FROM {$CFG->prefix}user u ";
 	$sql .= _rgrade_get_rol_student_restriction($courseid);
+	$sql .= " WHERE u.id_escola='$schoolid' ";
 	$sql .="ORDER BY u.lastname, u.firstname, u.id";
 
 	return get_recordset_sql($sql);
@@ -122,7 +123,7 @@ function rgrade_check_capability($c) {
  *
  * @param int $courseid
  */
-function rgrade_get_groups_studentsid($courseid){
+function rgrade_get_groups_studentsid($schoolid, $courseid){
 
 	global $CFG;
 
@@ -132,6 +133,8 @@ function rgrade_get_groups_studentsid($courseid){
 	JOIN {$CFG->prefix}groups g ON g.id = gm.groupid ";
 
 	$sql .= _rgrade_get_rol_student_restriction($courseid);
+	$sql .= " AND g.courseid = $courseid ";
+	$sql .= " AND u.id_escola='$schoolid' ";
 
 	$sql .="ORDER BY g.id, u.lastname, u.firstname";
 
@@ -194,15 +197,16 @@ function rgrade_get_time($sDate){
  * @param string $begin
  * @param string $end
  */
-function rgrade_get_grades($courseid, $bookid, $unitid = null,
-$groupid = null, $userid, $state = null, $begin = null, $end = null) {
+function rgrade_get_grades($schoolid, $courseid, $bookid, $unitid = null,
+		$groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
 	$sql = "SELECT g.id, g.userid, g.unitid, g.activityid, g.grade/g.maxgrade as grade,
 	g.starttime, g.totaltime , g.attempt, g.urlviewresults, g.comments, g.status
 	FROM {$CFG->prefix}rcontent_grades g
-	INNER JOIN {$CFG->prefix}rcontent rc ON rc.id = g.rcontentid ";
+	INNER JOIN {$CFG->prefix}rcontent rc ON rc.id = g.rcontentid
+	INNER JOIN {$CFG->prefix}user user ON g.userid = user.id AND user.id_escola='$schoolid' ";
 
 	$sql .= "WHERE rc.course = $courseid AND rc.bookid = $bookid ";
 
@@ -233,14 +237,15 @@ $groupid = null, $userid, $state = null, $begin = null, $end = null) {
 	return get_recordset_sql($sql);
 }
 
-function rgrade_get_counts($courseid, $bookid, $groupid = null,
-$studentid = null, $state = null, $begin = null, $end = null) {
+function rgrade_get_counts($schoolid, $courseid, $bookid, $groupid = null,
+		$studentid = null, $state = null, $begin = null, $end = null) {
 
 	global $CFG;
 
 	$sql = "select g.unitid, g.activityid, count(*) as total ".
 			"from {$CFG->prefix}rcontent_grades g ".
-			"inner join {$CFG->prefix}rcontent rc on rc.id = g.rcontentid ";
+			"inner join {$CFG->prefix}rcontent rc on rc.id = g.rcontentid ".
+			"inner join {$CFG->prefix}user user ON g.userid = user.id AND user.id_escola='$schoolid' ";
 
 	$sql .= "where rc.course = $courseid and rc.bookid = $bookid ";
 
@@ -284,7 +289,7 @@ $studentid = null, $state = null, $begin = null, $end = null) {
  * @param int $groupid
  *
  */
-function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
+function rgrade_last_units_with_grades($schoolid, $courseid, $bookid, $groupid = null) {
 
 	global $CFG;
 
@@ -293,7 +298,8 @@ function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 	"from {$CFG->prefix}rcontent_grades g ".
 	"inner join {$CFG->prefix}rcontent rc ON rc.id = g.rcontentid ".
 	"and rc.course = $courseid and rc.bookid = $bookid ".
-	"inner join {$CFG->prefix}rcommon_books_units u ON g.unitid = u.id ";
+	"inner join {$CFG->prefix}rcommon_books_units u ON g.unitid = u.id ".
+	"inner join {$CFG->prefix}user user ON g.userid = user.id AND user.id_escola='$schoolid' ";
 
 	$sql .= "WHERE rc.course = $courseid AND rc.bookid = $bookid ";
 
@@ -329,7 +335,7 @@ function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 			continue;
 		}
 
-		if(!$toreturn[1]){;
+		if(!$toreturn[1]){
 			$toreturn[1] = $unit;
 			continue;
 		}
