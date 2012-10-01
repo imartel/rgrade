@@ -411,6 +411,7 @@ div.code,.user-info {
 
 #rgrade_table {
 	margin: 25px auto;
+	text-align: left;
 }
 
 #rgrade_table table.display th {
