@@ -8,19 +8,19 @@ if(!isloggedin()) {
 	rgrade_json_error('User not logged in');
 }
 
-$courseid = optional_param('courseid', '', PARAM_INT);
+$courseid = optional_param('courseid', '', PARAM_NUMBER);
 if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
 	rgrade_json_error('Course not valid');
 }
 
-$id = optional_param('id', 0, PARAM_INT);
+$id = optional_param('id', 0, PARAM_NUMBER);
 if(!$id) {
 	rgrade_json_error('Grade id required');
 }
 
 $grade = get_record('rcontent_grades', 'id', $id);
 if(!$grade) {
-	rgrade_json_error('Grade not valid');
+	rgrade_json_error("Grade $id not valid");
 }
 
 //Somehow required for has_capability to work correctly.

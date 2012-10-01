@@ -6,7 +6,7 @@ require_once('rgrade_lib.php');
 // Opt. Avoid default javascript inclusion
 $CFG->javascript = "javascript.php";
 
-$courseid = required_param('courseid', PARAM_INT);
+$courseid = required_param('courseid', PARAM_NUMBER);
 $schoolid = required_param('schoolid');
 
 $course = get_record('course', 'id', $courseid);
@@ -57,7 +57,7 @@ $navlinks = array(
 
 print_header($page_title, $title, build_navigation($navlinks));
 
-$groupid = optional_param('groupid', '', PARAM_INT);
+$groupid = optional_param('groupid', '', PARAM_NUMBER);
 
 $unitid = rgrade_last_units_with_grades($schoolid, $courseid, $bookid, $groupid);
 
@@ -167,6 +167,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <input id="submit_print" type="button" name="print" value="{{I18n "Print"}}" class="button print"/>
 <input id="submit_excel" type="button" name="export" value="{{I18n "Excel Export"}}" class="button excel"/>
 <a id="button_book" href="#view=book" title=""  class="button">{{I18n "Book data"}}</a>
+<a id="button_table" href="#view=table" title=""  class="button">{{I18n "Table"}}</a>
 <input id="submit_back" type="button" name="back" value="{{I18n "Back"}}" class="button back"/>
 </div>
 
@@ -225,7 +226,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 				<form action="#" id="formGrade{{id}}">
 				<table>
 				<tr class="firstline">
-					<td class="attempt"><em>{{I18n "Attempt"}} {{attempt}}</em></td>
+					<td class="attempt"><em>{{I18n "Attempt"}} {{attempt}} <!--ID: {{id}}--></em></td>
 					<td class="starttime">{{formatDate starttime}}</td>
 					<td class="totaltime">{{formatDuration totaltime}}</td>
 					<td class="grade"><input type="text" name="grade" value="{{formatScore grade}}"/><input type="hidden" name="id" value="{{id}}"/><input type="hidden" name="touch" value=""/></td>

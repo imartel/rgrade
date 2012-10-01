@@ -661,11 +661,11 @@ div.code,.user-info {
 	border-bottom: 1px solid #999;
 }
 
-.blocks-rgrade .CORREGIDO {
+.blocks-rgrade .CORREGIDO, .blocks-rgrade .REVISADO {
 	color: #FF6600;
 }
 
-.blocks-rgrade .POR_CORREGIR {
+.blocks-rgrade .POR_CORREGIR, .blocks-rgrade .INCOMPLETO {
 	color: #CC0033;
 }
 

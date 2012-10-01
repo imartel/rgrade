@@ -5,7 +5,7 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once("../../config.php");
 require_once('rgrade_lib.php');
 
-$courseid = optional_param('courseid', '', PARAM_INT);
+$courseid = optional_param('courseid', '', PARAM_NUMBER);
 if(!$courseid) {
 	rgrade_json_error("Course required");
 }
@@ -17,7 +17,7 @@ if(!$course) {
 	rgrade_json_error("Course does not exists: $courseid");
 }
 
-$bookid = optional_param('bookid', '', PARAM_INT);
+$bookid = optional_param('bookid', '', PARAM_NUMBER);
 $book = rgrade_get_book_from_course($courseid, $bookid);
 if(!$book) {
 	rgrade_json_error('Book not valid');
@@ -42,6 +42,7 @@ rs_close($rs);
 
 $data['groups'] = array();
 
+// TODO: Reordenar subgrupos
 $rs = rgrade_get_groups_studentsid($schoolid, $courseid);
 while($group = rs_fetch_next_record($rs)) {
 

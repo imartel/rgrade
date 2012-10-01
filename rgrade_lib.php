@@ -73,7 +73,7 @@ function rgrade_get_units_from_book($bookid){
  * @param string $key
  */
 function rgrade_get_string($key, $args = null){
-	return get_string($key, 'blocks/rgrade', $args);
+	return get_string($key, null, $args);
 }
 
 function _rgrade_get_rol_student_restriction($courseid){
@@ -120,6 +120,8 @@ function rgrade_check_capability($c) {
 /**
  *
  * Devuelve un recordset con todos los grupos y sus estudiants de un curso
+ *
+ * Sólo se devuelven los grupos con estudiantes
  *
  * @param int $courseid
  */
@@ -237,6 +239,12 @@ function rgrade_get_grades($schoolid, $courseid, $bookid, $unitid = null,
 	return get_recordset_sql($sql);
 }
 
+/**
+ * Devuelve el recordset con el listado de unidades, actividades con su total
+ * de seguimientos enviados.
+ *
+ * NO se excluyen los grades de rol profesor
+ */
 function rgrade_get_counts($schoolid, $courseid, $bookid, $groupid = null,
 		$studentid = null, $state = null, $begin = null, $end = null) {
 

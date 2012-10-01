@@ -8,8 +8,8 @@ if(!isloggedin()) {
 	rgrade_json_error('User not logged in');
 }
 
-$courseid = optional_param('courseid', '', PARAM_INT);
-$bookid = optional_param('bookid', '', PARAM_INT);
+$courseid = optional_param('courseid', '', PARAM_NUMBER);
+$bookid = optional_param('bookid', '', PARAM_NUMBER);
 $schoolid = required_param('schoolid');
 
 if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
@@ -23,9 +23,9 @@ if(!$book) {
 }
 
 // 2. Get request params
-$groupid = optional_param('groupid', '', PARAM_INT);
+$groupid = optional_param('groupid', '', PARAM_NUMBER);
 
-$unitid = optional_param('unitid', '', PARAM_INT);
+$unitid = optional_param('unitid', '', PARAM_NUMBER);
 if(!$unitid){
 	rgrade_json_error('Unit required');
 }

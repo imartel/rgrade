@@ -703,7 +703,8 @@ function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 				name : "table",
 				callback : ShowTable,
 				excel : true,
-				enable_unit : true
+				enable_unit : true,
+				disable_table : true
 			}, {
 				name : "book",
 				callback : ShowBook,
@@ -885,6 +886,12 @@ function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 			$('#field_groupid').attr('disabled', 'disabled');
 		} else {
 			$('#field_groupid').removeAttr('disabled');
+		}
+
+		if (v.disable_table) {
+			$('#button_table').hide();
+		} else {
+			$('#button_table').show();
 		}
 	}
 
