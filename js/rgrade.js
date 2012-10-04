@@ -318,7 +318,6 @@ function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 	}
 
 	function formatScore(score) {
-
 		var BASE = 10.0;
 
 		return (score * BASE).toFixed(2);
@@ -703,8 +702,7 @@ function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 				name : "table",
 				callback : ShowTable,
 				excel : true,
-				enable_unit : true,
-				disable_table : true
+				enable_unit : true
 			}, {
 				name : "book",
 				callback : ShowBook,
@@ -886,12 +884,6 @@ function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 			$('#field_groupid').attr('disabled', 'disabled');
 		} else {
 			$('#field_groupid').removeAttr('disabled');
-		}
-
-		if (v.disable_table) {
-			$('#button_table').hide();
-		} else {
-			$('#button_table').show();
 		}
 	}
 
@@ -1895,13 +1887,13 @@ function Rgrade(schoolid, courseid, bookid, unitid, studentid) {
 			var attempt = grade.attempt;
 
 			// Unknown semantics
-			if (!grade.status || grade.status === 'NO_INICIADO' || grade.status === 'INCOMPLETO') {
+			if (!grade.status || grade.status === 'NO_INICIADO') {
 				return;
 			}
 
 			// Score ignored
-			if (grade.status === 'POR_CORREGIR') {
-				data.status = 'POR_CORREGIR';
+			if (grade.status === 'POR_CORREGIR' || grade.status === 'INCOMPLETO') {
+				data.status = grade.status;
 				data.current = grade;
 				return;
 			}

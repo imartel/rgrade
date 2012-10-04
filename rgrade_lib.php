@@ -481,8 +481,11 @@ function rgrade_update_grade($grade, $txtgrade, $comments){
 	$update->comments=$comments;
 	$update->timemodified = time();
 
+	//Fix: En DB las actividades activas tienen maxgrade = 0
+	$update->maxgrade = 10;
+
 	//Compatibilidad con rcontent/report. Actualizamos estado POR_CORREGIR
-	if ($grade->status == "POR_CORREGIR") {
+	if ($grade->status == "POR_CORREGIR" || $grade->status === 'INCOMPLETO') {
 		$update->status = "CORREGIDO";
 	}
 
@@ -491,11 +494,14 @@ function rgrade_update_grade($grade, $txtgrade, $comments){
 		return false;
 	}
 
-	// Update GRADES - Use mod/rcontent/locallib.php
-	if($grade->rcontentid) {
-		$rcontent = get_record('rcontent','id', $grade->rcontentid);
-		rcontent_update_grades($rcontent,$grade->userid);
-	}
+	/*
+	* FIX: No se actualizan los grades porque no es necesario en este caso
+	* y al desconocer los cambios realizados en rgrade evitamos posibles
+	* "Daños colaterales" no esperados
+	* if($grade->rcontentid) {
+	* 	$rcontent = get_record('rcontent','id', $grade->rcontentid);
+	* rcontent_update_grades($rcontent,$grade->userid);
+	* }*/
 
 	return get_record('rcontent_grades', 'id', $grade->id);
 }

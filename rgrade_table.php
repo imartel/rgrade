@@ -167,7 +167,6 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <input id="submit_print" type="button" name="print" value="{{I18n "Print"}}" class="button print"/>
 <input id="submit_excel" type="button" name="export" value="{{I18n "Excel Export"}}" class="button excel"/>
 <a id="button_book" href="#view=book" title=""  class="button">{{I18n "Book data"}}</a>
-<a id="button_table" href="#view=table" title=""  class="button">{{I18n "Table"}}</a>
 <input id="submit_back" type="button" name="back" value="{{I18n "Back"}}" class="button back"/>
 </div>
 

@@ -661,11 +661,11 @@ div.code,.user-info {
 	border-bottom: 1px solid #999;
 }
 
-.blocks-rgrade .CORREGIDO, .blocks-rgrade .REVISADO {
+.blocks-rgrade .CORREGIDO,.blocks-rgrade .REVISADO {
 	color: #FF6600;
 }
 
-.blocks-rgrade .POR_CORREGIR, .blocks-rgrade .INCOMPLETO {
+.blocks-rgrade .POR_CORREGIR,.blocks-rgrade .INCOMPLETO {
 	color: #CC0033;
 }
 
@@ -817,7 +817,11 @@ a.button.disabled {
 }
 
 .blocks-rgrade .ui-datepicker {
-	width: 13em;
+	width: 18em;
+}
+
+#blocks-rgrade-rgrade_table #content {
+	margin: 0px;
 }
 
 .blocks-rgrade .ui-widget {
