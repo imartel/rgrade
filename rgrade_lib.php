@@ -313,7 +313,7 @@ function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 		return null;
 	}
 
-	$toreturn = array();
+	$toreturn = array(null, null);
 
 	while($unit = rs_fetch_next_record($rs)) {
 
