@@ -1,12 +1,10 @@
 <?php
 header("Content-Type: application/json; charset=UTF-8");
-/*
- * TODO: Utilizar en el bloque de la columna lateral
- */
+
 require_once("../../config.php");
 require_once('rgrade_lib.php');
 
-$courseid = optional_param('courseid', '', PARAM_INT);
+$courseid = optional_param('courseid', '', PARAM_NUMBER);
 
 if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
 	rgrade_json_error('Course not valid');

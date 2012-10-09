@@ -6,8 +6,8 @@ require_once('rgrade_lib.php');
 // Opt. Avoid default javascript inclusion
 $CFG->javascript = "javascript.php";
 
-$courseid = required_param('courseid', PARAM_INT);
-$bookid = required_param('bookid', PARAM_INT);
+$courseid = required_param('courseid', PARAM_NUMBER);
+$bookid = required_param('bookid', PARAM_NUMBER);
 
 $course = get_record('course', 'id', $courseid);
 if(!$course) {
@@ -50,7 +50,7 @@ $navlinks = array(
 
 print_header($page_title, $title, build_navigation($navlinks));
 
-$groupid = optional_param('groupid', '', PARAM_INT);
+$groupid = optional_param('groupid', '', PARAM_NUMBER);
 
 $unitid = rgrade_last_units_with_grades($courseid, $bookid, $groupid);
 

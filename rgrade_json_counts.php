@@ -4,8 +4,8 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once("../../config.php");
 require_once('rgrade_lib.php');
 
-$courseid = optional_param('courseid', '', PARAM_INT);
-$bookid = optional_param('bookid', '', PARAM_INT);
+$courseid = optional_param('courseid', '', PARAM_NUMBER);
+$bookid = optional_param('bookid', '', PARAM_NUMBER);
 
 if(!$courseid || !$course = get_record('course', 'id', $courseid)) {
 	rgrade_json_error('Course not valid');
@@ -17,8 +17,8 @@ if(!$book) {
 	rgrade_json_error('Book not valid');
 }
 
-$studentid = optional_param('studentid', '', PARAM_INT);
-$groupid = optional_param('groupid', '', PARAM_INT);
+$studentid = optional_param('studentid', '', PARAM_NUMBER);
+$groupid = optional_param('groupid', '', PARAM_NUMBER);
 $stateid = optional_param('stateid', '', PARAM_TEXT);
 $begin = optional_param('begin', '', PARAM_TEXT);
 $end = optional_param('end', '', PARAM_TEXT);
