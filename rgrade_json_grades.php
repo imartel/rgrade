@@ -11,7 +11,7 @@ if(!isloggedin()) {
 $courseid = optional_param('courseid', '', PARAM_NUMBER);
 $bookid = optional_param('bookid', '', PARAM_NUMBER);
 
-if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
+if(!$courseid || ! $course = rgrade_get_course($courseid)) {
 	rgrade_json_error('Course not valid');
 }
 
@@ -20,7 +20,6 @@ $book = rgrade_get_book_from_course($courseid, $bookid);
 if(!$book) {
 	rgrade_json_error('Book not valid');
 }
-
 // 2. Get request params
 $groupid = optional_param('groupid', '', PARAM_NUMBER);
 
@@ -43,16 +42,16 @@ $begin = optional_param('begin', '', PARAM_TEXT);
 $end = optional_param('end', '', PARAM_TEXT);
 
 // 2. Load Grades
-$rs = rgrade_get_grades(
+$grades = rgrade_get_grades(
 		$courseid, $bookid, $unitid, $groupid, $studentid, $stateid, $begin, $end);
 
-if (!$rs){
+if (!$grades){
 	rgrade_json_error("Error SQL");
 }
 
 $data = array();
 
-while($grade = rs_fetch_next_record($rs)) {
+foreach($grades as $grade) {
 	$unitid = $grade->unitid;
 
 	if(!isset($data[$unitid])){
@@ -65,7 +64,5 @@ while($grade = rs_fetch_next_record($rs)) {
 	//dejamos el resto como string porque son Bigint
 	$data[$unitid][] = $grade;
 }
-
-rs_close($rs);
 
 echo json_encode($data);

@@ -6,7 +6,7 @@ require_once('rgrade_lib.php');
 
 $courseid = optional_param('courseid', '', PARAM_NUMBER);
 
-if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
+if(!$courseid || ! $course = rgrade_get_course($courseid)) {
 	rgrade_json_error('Course not valid');
 }
 

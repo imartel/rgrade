@@ -8,13 +8,33 @@ $ENUM_SCORES = array(
 		"AVERAGE", "BEST_ATTEMPT", "LAST_ATTEMPT", "FIRST_ATTEMPT");
 
 /**
+ * Devuelve un objecto curso con las propiedades id, shortname y fullname
+ * @param int $courseid
+ */
+function rgrade_get_course($courseid){
+	global $DB;
+
+	return $DB->get_record('course', array('id'=>$courseid), 'id, shortname, fullname');
+}
+
+/**
+ * Devuelve un grade por id
+ * @param int $gradeid
+ */
+function rgrade_get_rcontent_grade($gradeid){
+	global $DB;
+
+	return $DB->get_record('rcontent_grades', array('id'=>$gradeid), '*');
+}
+
+/**
  *
  * Devuelve un array con el Id y Name de todos los libros del curso
  * @param int $courseid
  */
 function rgrade_get_all_books($courseid) {
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "SELECT b.id, b.name
 	FROM {$CFG->prefix}rcontent c
@@ -24,7 +44,7 @@ function rgrade_get_all_books($courseid) {
 	GROUP BY b.id, b.name
 	ORDER BY b.name ASC";
 
-	return get_records_sql($sql);
+	return $DB->get_records_sql($sql);
 }
 
 /**
@@ -59,12 +79,12 @@ function rgrade_get_book_from_course($courseid, $bookid) {
  */
 function rgrade_get_units_from_book($bookid){
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "select id, name, code from  {$CFG->prefix}rcommon_books_units
 	where bookid = $bookid order by sortorder, timecreated";
 
-	return get_records_sql($sql);
+	return $DB->get_records_sql($sql);
 }
 
 /**
@@ -73,7 +93,7 @@ function rgrade_get_units_from_book($bookid){
  * @param string $key
  */
 function rgrade_get_string($key, $args = null){
-	return get_string($key, 'blocks/rgrade', $args);
+	return get_string($key, 'block_rgrade', $args);
 }
 
 function _rgrade_get_rol_student_restriction($courseid){
@@ -98,13 +118,13 @@ function _rgrade_get_rol_student_restriction($courseid){
  */
 function rgrade_get_all_students($courseid){
 
-	global $CFG;
+	global $CFG, $DB;
 
-	$sql = "SELECT u.id, u.lastname, u.firstname FROM {$CFG->prefix}user u ";
+	$sql  = "SELECT u.id, u.lastname, u.firstname FROM {$CFG->prefix}user u ";
 	$sql .= _rgrade_get_rol_student_restriction($courseid);
-	$sql .="ORDER BY u.lastname, u.firstname, u.id";
+	$sql .= "ORDER BY u.lastname, u.firstname, u.id";
 
-	return get_recordset_sql($sql);
+	return $DB->get_recordset_sql($sql);
 }
 
 function rgrade_check_capability($c) {
@@ -118,13 +138,13 @@ function rgrade_check_capability($c) {
 
 /**
  *
- * Devuelve un recordset con todos los grupos y sus estudiants de un curso
+ * Devuelve un recordset con todos los grupos y los estudiants de un curso
  *
  * @param int $courseid
  */
 function rgrade_get_groups_studentsid($courseid){
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "SELECT u.id as userid, g.id as groupid, g.name as groupname
 	FROM {$CFG->prefix}user u
@@ -135,7 +155,7 @@ function rgrade_get_groups_studentsid($courseid){
 
 	$sql .="ORDER BY g.id, u.lastname, u.firstname";
 
-	return get_recordset_sql($sql);
+	return $DB->get_recordset_sql($sql);
 }
 
 
@@ -143,11 +163,15 @@ function rgrade_get_groups_studentsid($courseid){
  * Devuelve un cadena con los IDS de todos los roles de estudiante separados
  * por coma.
  * Ejemplo: 3,8
+ *
+ * FIXME!!
  */
 function rgrade_get_student_roles_sql(){
-	$roles = get_roles_with_capability('moodle/legacy:student');
+	/*$roles = get_roles_with_capability('moodle/legacy:student');
 
-	return implode(',', array_keys($roles));
+	return implode(',', array_keys($roles));*/
+	
+	return '5';	
 }
 
 /**
@@ -156,11 +180,9 @@ function rgrade_get_student_roles_sql(){
  * @param int $bookid
  */
 function rgrade_get_book($bookid){
-	if(!$bookid){
-		return;
-	}
+	global $DB;
 
-	return get_record('rcommon_books', 'id', $bookid);
+	return $DB->get_record('rcommon_books', array('id'=>$bookid), '*');
 }
 
 /**
@@ -197,7 +219,7 @@ function rgrade_get_time($sDate){
 function rgrade_get_grades($courseid, $bookid, $unitid = null,
 $groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "SELECT g.id, g.userid, g.unitid, g.activityid, g.grade/g.maxgrade as grade,
 	g.starttime, g.totaltime , g.attempt, g.urlviewresults, g.comments, g.status
@@ -230,13 +252,13 @@ $groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	$sql .=	"ORDER BY g.userid, g.unitid, g.activityid, g.attempt";
 
-	return get_recordset_sql($sql);
+	return $DB->get_recordset_sql($sql);
 }
 
 function rgrade_get_counts($courseid, $bookid, $groupid = null,
 $studentid = null, $state = null, $begin = null, $end = null) {
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "select g.unitid, g.activityid, count(*) as total ".
 			"from {$CFG->prefix}rcontent_grades g ".
@@ -271,7 +293,7 @@ $studentid = null, $state = null, $begin = null, $end = null) {
 
 	$sql .= "group by g.unitid, g.activityid ";
 
-	return get_recordset_sql($sql);
+	return $DB->get_recordset_sql($sql);
 }
 
 /**
@@ -286,7 +308,7 @@ $studentid = null, $state = null, $begin = null, $end = null) {
  */
 function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql =
 	"select u.id, u.sortorder ".
@@ -307,15 +329,14 @@ function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 
 	$sql .=	"order by g.id desc";
 
-	$rs = get_recordset_sql($sql, 0, 100);
-
-	if (!$rs) {
+	$units = $DB->get_recordset_sql($sql, null, 0, 100);
+	if (!$units) {
 		return null;
 	}
 
 	$toreturn = array(null, null);
 
-	while($unit = rs_fetch_next_record($rs)) {
+	foreach($units as $unit) {
 
 		$oU = $unit->sortorder;
 
@@ -343,8 +364,7 @@ function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 			$toreturn[($o0 < $o1) ? 0 : 1] = $unit;
 		}
 	}
-	rs_close($rs);
-
+	
 	if(!$toreturn[0]){
 		return array();
 	}
@@ -403,7 +423,7 @@ function _rgrade_add_where_restriction($param, $value, $op = ''){
  */
 function rgrade_get_recordset_activities($bookid, $unitid = null) {
 
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "SELECT a.*, u.code as unitcode, u.name as unitname
 	FROM {$CFG->prefix}rcommon_books_activities a
@@ -416,7 +436,7 @@ function rgrade_get_recordset_activities($bookid, $unitid = null) {
 
 	$sql .=	"ORDER BY u.sortorder, a.sortorder, a.timecreated";
 
-	return get_recordset_sql($sql);
+	return $DB->get_recordset_sql($sql);
 }
 
 /**
@@ -440,12 +460,12 @@ function rgrade_json_error($message){
  * @param <array, int> $ids
  */
 function rgrade_get_grades_by_id($ids){
-	global $CFG;
+	global $CFG, $DB;
 
 	$sql = "SELECT g.* FROM {$CFG->prefix}rcontent_grades g WHERE " .
 	_rgrade_add_where_restriction("g.id", $ids);
 
-	return get_recordset_sql($sql);
+	return $DB->get_recordset_sql($sql);
 }
 
 
@@ -456,7 +476,8 @@ function rgrade_get_grades_by_id($ids){
  * See function rcontent_update_grade_instance in mod/rcontent/locallib.php
  */
 function rgrade_update_grade($grade, $txtgrade, $comments){
-
+	global $DB;
+	
 	if(!$grade){
 		return false;
 	}
@@ -472,16 +493,16 @@ function rgrade_update_grade($grade, $txtgrade, $comments){
 		$update->status = "CORREGIDO";
 	}
 
-	$ok = update_record('rcontent_grades', $update);
+	$ok = $DB->update_record('rcontent_grades', $update);
 	if (!$ok) {
 		return false;
 	}
 
 	// Update GRADES - Use mod/rcontent/locallib.php
 	if($grade->rcontentid) {
-		$rcontent = get_record('rcontent','id', $grade->rcontentid);
+		$rcontent = $DB->get_record('rcontent', array('id'=>$grade->rcontentid), '*');
 		rcontent_update_grades($rcontent,$grade->userid);
 	}
 
-	return get_record('rcontent_grades', 'id', $grade->id);
+	return rgrade_get_rcontent_grade($grade->id);
 }

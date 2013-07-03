@@ -9,7 +9,7 @@ if(!isloggedin()) {
 }
 
 $courseid = optional_param('courseid', '', PARAM_NUMBER);
-if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
+if(!$courseid || ! $course = rgrade_get_course($courseid)) {
 	rgrade_json_error('Course not valid');
 }
 
@@ -18,7 +18,7 @@ if(!$id) {
 	rgrade_json_error('Grade id required');
 }
 
-$grade = get_record('rcontent_grades', 'id', $id);
+$grade = rgrade_get_rcontent_grade($id);
 if(!$grade) {
 	rgrade_json_error('Grade not valid');
 }

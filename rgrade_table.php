@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config.php");
+require_once('../../config.php');
 require_once('rgrade_lib.php');
 
 // Opt. Avoid default javascript inclusion
@@ -8,57 +8,59 @@ $CFG->javascript = "javascript.php";
 
 $courseid = required_param('courseid', PARAM_NUMBER);
 $bookid = required_param('bookid', PARAM_NUMBER);
-
-$course = get_record('course', 'id', $courseid);
+$course = rgrade_get_course($courseid);
 if(!$course) {
 	error('Course not valid');
 }
-
 $book = rgrade_get_book_from_course($courseid, $bookid);
 if(!$book) {
 	error('Book not valid');
 }
 
-require_login($course->id, false);
+require_login($courseid, false);
 
 $tshourly = "";
 
-$jspath = $CFG->wwwroot.'/blocks/rgrade/js';
-
-require_js(array(
-		$jspath.'/jquery-1.7.1.min.js',
-		$jspath.'/jquery.ba-bbq.js',
-		$jspath.'/handlebars-1.0.0.beta.6.js', $jspath.'/i18n.js', $jspath.'/css.js',
-		$jspath.'/jquery.cookie.js',
-		$jspath.'/jquery.simplemodal.1.4.2.min.js'));
-
-$csspath = $CFG->wwwroot.'/blocks/rgrade/css';
-
-$CFG->stylesheets[] = $csspath.'/custom-theme/jquery-ui-1.8.18.custom.css';
-$CFG->stylesheets[] = $csspath.'/rgrade.css';
-
-$mod_title = rgrade_get_string("rgrade");
-$mod_url = "#";
-
-$page_title = $mod_title . ": " . $course->shortname . " | " . $book->name;
-$title = $mod_title . ": " . $course->fullname . " | " . $book->name;
-
-$navlinks = array(
-		array('name' => $mod_title, 'link' => $mod_url, 'type' => 'title'),
-		array('name' => $book->name, 'type' => 'title')
-);
-
-print_header($page_title, $title, build_navigation($navlinks));
-
+// Init params 
 $groupid = optional_param('groupid', '', PARAM_NUMBER);
 
 $unitid = rgrade_last_units_with_grades($courseid, $bookid, $groupid);
 
 $studentid = null;
-
 if (!rgrade_check_capability("moodle/grade:viewall")) {
 	$studentid = $USER->id;
 }
+
+
+$mod_title = rgrade_get_string("rgrade");
+$mod_url = "#";
+$page_title = $mod_title . ": " . $course->shortname . " | " . $book->name;
+$title = $mod_title . ": " . $course->fullname . " | " . $book->name;
+
+$PAGE->set_heading($page_title);
+$PAGE->set_title($title);
+
+$jspath = $CFG->wwwroot.'/blocks/rgrade/js';
+$PAGE->requires->js(new moodle_url($jspath.'/jquery-1.7.1.min.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/jquery.ba-bbq.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/handlebars-1.0.0.beta.6.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/i18n.js')); 
+$PAGE->requires->js(new moodle_url($jspath.'/css.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/jquery.cookie.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/jquery.simplemodal.1.4.2.min.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/rgrade.js?v='.$tshourly));
+
+$csspath = $CFG->wwwroot.'/blocks/rgrade/css';
+$PAGE->requires->css(new moodle_url($csspath.'/custom-theme/jquery-ui-1.8.18.custom.css'));
+$PAGE->requires->css(new moodle_url($csspath.'/rgrade.css'));
+
+$PAGE->navbar->add($mod_title, new moodle_url($mod_url));
+$PAGE->navbar->add($book->name, null);
+
+//Compatibilitat css moodle 1.9
+$PAGE->add_body_class("blocks-rgrade");
+
+echo $OUTPUT->header();
 
 ?>
 
@@ -176,10 +178,6 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 	var unitid = <?php echo json_encode($unitid); ?>;
 	var studentid = "<?php echo $studentid; ?>";  
 </script>
-
-<script
-	type="text/javascript"
-	src="<?php echo $jspath.'/rgrade.js?v='.$tshourly ?>"></script>
 
 <div id="layer-grades"></div>
 

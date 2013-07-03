@@ -1,7 +1,5 @@
 var I18n = {
-
 	init : function(options) {
-
 		if (options.lang == 'ca_utf8') {
 			lang = "ca";
 		}

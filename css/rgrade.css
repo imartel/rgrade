@@ -8,6 +8,10 @@ html {
 	display: none;
 }
 
+.blocks-rgrade .region-content {
+	background-color:white;
+}
+
 .blocks-rgrade .button {
 	font-family: sans-serif;
 	font-size: 11px;
@@ -813,10 +817,6 @@ a.button.disabled {
 
 .blocks-rgrade #field_scoreid {
 	width: 150px;
-}
-
-.blocks-rgrade .ui-datepicker {
-	width: 13em;
 }
 
 .blocks-rgrade .ui-widget {

@@ -5,8 +5,15 @@ class block_rgrade extends block_base {
 
 	function init() {
 		$this->title = rgrade_get_string('rgrade');
-		$this->version = 2012032200;
 	}
+	
+	function instance_allow_multiple() {
+        return false;
+    }
+    
+    function has_config() {
+        return false;
+    }
 
 	public function get_content() {
 
