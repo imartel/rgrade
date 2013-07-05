@@ -1,15 +1,9 @@
 var I18n = {
 	init : function(options) {
-		if (options.lang == 'ca_utf8') {
-			lang = "ca";
-		}
-
-		else if (options.lang == 'es_utf8' || options.lang == 'es_es_utf8') {
-			lang = "es";
-		}
-
-		else {
-			lang = "en";
+		lang = options.lang;
+		
+		if(lang != 'ca' && lang != 'es') {
+			lang : 'en';
 		}
 	},
 
