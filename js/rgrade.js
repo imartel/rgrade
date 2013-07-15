@@ -578,11 +578,11 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 				return false;
 			}
 
-			var a1 = a.sort(), a2 = b.sort();
+			// var a1 = a.sort(), a2 = b.sort();
 
-			for ( var i = 0; a1[i]; i++) {
+			for ( var i = 0; a[i]; i++) {
 
-				if (a1[i] != a2[i]) {
+				if (a[i] != b[i]) {
 					return false;
 				}
 			}
@@ -793,12 +793,14 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 	function scrollTableHeader() {
 
 		var tableHeader = $('#rgrade_table .top');
+		var columnHeader = $("#column-header");
 
 		if (tableHeader.size() == 0) {
 			return;
 		}
 
 		var originalTop = tableHeader.offset().top;
+		var originalLeft = columnHeader.offset().left;
 
 		$(window).scroll(function() {
 
@@ -807,12 +809,18 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 			if (scrollTop > originalTop && position != 'fixed') {
 				tableHeader.css("top", "0");
+				tableHeader.css("left", originalLeft);
 				tableHeader.css("position", "fixed");
 			}
 
 			else if (scrollTop <= originalTop && position == 'fixed') {
 				tableHeader.css("position", "static");
 			}
+		});
+
+		$(window).resize(function() {
+			originalLeft = columnHeader.offset().left;
+			tableHeader.css("left", originalLeft);
 		});
 
 	}
@@ -825,6 +833,7 @@ function Rgrade(courseid, bookid, unitid, studentid) {
 
 		$("#layer-unit_message").modal({
 			overlayClose : true,
+
 			minHeight : 140
 		});
 

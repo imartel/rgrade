@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
-.hide-print, #header .logininfo{
+.hide-print, #page-header .logininfo, #page-header .navbar{
 	display:none;
+}
+
+#rgrade_table #combo {
+	width: 100%;
 }

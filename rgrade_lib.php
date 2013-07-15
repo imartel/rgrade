@@ -96,24 +96,24 @@ function rgrade_get_string($key, $args = null){
 	return get_string($key, 'block_rgrade', $args);
 }
 
+/**
+ * Devuelve la cadena SQL para filtrar todos los participantes del curso 
+ * con capability 'mod/rcontent:savetrack' 
+ */
 function _rgrade_get_rol_student_restriction($courseid){
 
 	global $CFG;
-
+	
 	$context = get_context_instance(CONTEXT_COURSE, $courseid);
-	$roles = rgrade_get_student_roles_sql();
+	$roles = implode(',', 
+		array_keys(get_roles_with_capability('mod/rcontent:savetrack', null, $context)));
 
-	return "JOIN (
-	SELECT DISTINCT ra.userid
-	FROM {$CFG->prefix}role_assignments ra
-	WHERE ra.roleid IN ($roles)
-	AND ra.contextid = {$context->id}
-	) roles ON roles.userid = u.id ";
+	return "JOIN {$CFG->prefix}user_enrolments ue ON ue.userid = u.id ".
+	"JOIN {$CFG->prefix}enrol e ON e.id = ue.enrolid AND e.courseid = $courseid  AND e.roleid IN ($roles) ";
 }
 
 /**
  * Devuelve un recordset con todos los estudiantes de un curso
- *
  * @param int $courseid
  */
 function rgrade_get_all_students($courseid){
@@ -156,22 +156,6 @@ function rgrade_get_groups_studentsid($courseid){
 	$sql .="ORDER BY g.id, u.lastname, u.firstname";
 
 	return $DB->get_recordset_sql($sql);
-}
-
-
-/**
- * Devuelve un cadena con los IDS de todos los roles de estudiante separados
- * por coma.
- * Ejemplo: 3,8
- *
- * FIXME!!
- */
-function rgrade_get_student_roles_sql(){
-	/*$roles = get_roles_with_capability('moodle/legacy:student');
-
-	return implode(',', array_keys($roles));*/
-	
-	return '5';	
 }
 
 /**
@@ -221,10 +205,10 @@ $groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	global $CFG, $DB;
 
-	$sql = "SELECT g.id, g.userid, g.unitid, g.activityid, g.grade/g.maxgrade as grade,
-	g.starttime, g.totaltime , g.attempt, g.urlviewresults, g.comments, g.status
-	FROM {$CFG->prefix}rcontent_grades g
-	INNER JOIN {$CFG->prefix}rcontent rc ON rc.id = g.rcontentid ";
+	$sql = "SELECT g.id, g.userid, g.unitid, g.activityid, g.grade/g.maxgrade as grade, ".
+	"g.starttime, g.totaltime , g.attempt, g.urlviewresults, g.comments, g.status ".
+	"FROM {$CFG->prefix}rcontent_grades g ".
+	"INNER JOIN {$CFG->prefix}rcontent rc ON rc.id = g.rcontentid ";
 
 	$sql .= "WHERE rc.course = $courseid AND rc.bookid = $bookid ";
 
