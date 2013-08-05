@@ -9,8 +9,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
  
-$plugin->version   = 2013042200;
-$plugin->requires  = 2013042200;
+$plugin->version   = 2013080500;
+$plugin->requires  = 2011033009;
 $plugin->cron      = 0;
 $plugin->component = 'block_rgrade';
 $plugin->maturity  = MATURITY_RC;

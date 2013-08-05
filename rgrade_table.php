@@ -18,6 +18,7 @@ if(!$book) {
 }
 
 require_login($courseid, false);
+$PAGE->set_url(new moodle_url('/blocks/rgrade/rgrade_table.php', array('courseid' => $courseid, 'bookid' => $bookid)));
 
 $tshourly = "";
 
@@ -30,7 +31,6 @@ $studentid = null;
 if (!rgrade_check_capability("moodle/grade:viewall")) {
 	$studentid = $USER->id;
 }
-
 
 $mod_title = rgrade_get_string("rgrade");
 $mod_url = "#";
@@ -61,7 +61,6 @@ $PAGE->navbar->add($book->name, null);
 $PAGE->add_body_class("blocks-rgrade");
 
 echo $OUTPUT->header();
-
 ?>
 
 <form id="rgrade_search_form"
@@ -490,4 +489,4 @@ echo $OUTPUT->header();
 		target="_blank">Manual d'usuari</a>
 </div>
 
-<?php print_footer(); ?>
+<?php print $OUTPUT->footer(); ?>

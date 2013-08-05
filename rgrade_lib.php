@@ -97,19 +97,22 @@ function rgrade_get_string($key, $args = null){
 }
 
 /**
- * Devuelve la cadena SQL para filtrar todos los participantes del curso 
- * con capability 'mod/rcontent:savetrack' ==> FIXME!!
+ * Devuelve la cadena SQL para filtrar todos los usuarios de un curso que tienen
+ * que aparecer en el libro de calificaciones. 
+ * Los usuarios necesitan tener al menos uno de los roles en un curso definidos 
+ * en /admin/settings.php para aparecer en el libro de calificaciones del curso.
  */
 function _rgrade_get_rol_student_restriction($courseid){
-
 	global $CFG;
-	
-	$context = get_context_instance(CONTEXT_COURSE, $courseid);
-	$roles = implode(',', 
-		array_keys(get_roles_with_capability('mod/rcontent:savetrack', null, $context)));
 
-	return "JOIN {$CFG->prefix}user_enrolments ue ON ue.userid = u.id ".
-	"JOIN {$CFG->prefix}enrol e ON e.id = ue.enrolid AND e.courseid = $courseid  AND e.roleid IN ($roles) ";
+	$context = get_context_instance(CONTEXT_COURSE, $courseid);
+
+	return "JOIN (
+       SELECT DISTINCT ra.userid
+       FROM {$CFG->prefix}role_assignments ra
+       WHERE ra.roleid IN ($CFG->gradebookroles)
+       AND ra.contextid = {$context->id}
+       ) roles ON roles.userid = u.id ";
 }
 
 /**

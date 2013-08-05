@@ -1,4 +1,7 @@
 <?php
+define('AJAX_SCRIPT', true);
+define('NO_DEBUG_DISPLAY', true);
+
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once("../../config.php");
