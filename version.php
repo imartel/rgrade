@@ -1,5 +1,21 @@
 <?php
-$plugin->version   = 2013070200; // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2011033009; // Requires this Moodle version
-$plugin->component = 'block_rgrade'; // Full name of the plugin (used for diagnostics)
-$module->release   = 'v2.0'; // Human-readable version name
+ /**
+ * Version details
+ *
+ * @package    block
+ * @subpackage marsupial
+ * @copyright  2013 lagaleratext.cat
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+defined('MOODLE_INTERNAL') || die();
+ 
+$plugin->version   = 2013042200;
+$plugin->requires  = 2013042200;
+$plugin->cron      = 0;
+$plugin->component = 'block_rgrade';
+$plugin->maturity  = MATURITY_RC;
+$plugin->release   = 'v2.0';
+ 
+$plugin->dependencies = array(
+    'mod_rcontent' => ANY_VERSION
+);

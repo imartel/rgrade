@@ -98,7 +98,7 @@ function rgrade_get_string($key, $args = null){
 
 /**
  * Devuelve la cadena SQL para filtrar todos los participantes del curso 
- * con capability 'mod/rcontent:savetrack' 
+ * con capability 'mod/rcontent:savetrack' ==> FIXME!!
  */
 function _rgrade_get_rol_student_restriction($courseid){
 
