@@ -244,7 +244,6 @@ div.code,.user-info {
 
 .blocks-rgrade .attempt {
 	width: 10%;
-	white-space: nowrap;
 }
 
 .blocks-rgrade .starttime {
@@ -944,4 +943,10 @@ a.button.disabled {
 
 table#row-header{
 	margin-bottom:0px;
+}
+
+/* Evitar que el número de intento se corte */
+#rgrade_table td.attempt {
+	text-overflow:clip;
+	white-space:nowrap;
 }

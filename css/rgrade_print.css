@@ -8,6 +8,6 @@
 	display:none;
 }
 
-#rgrade_table #combo {
+#rgrade_table #combo, .blocks-rgrade.student #rgrade_table #combo  {
 	width: 100%;
 }
