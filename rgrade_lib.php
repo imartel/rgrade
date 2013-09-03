@@ -461,18 +461,16 @@ function rgrade_update_grade($grade, $txtgrade, $comments){
 		return false;
 	}
 
-	$update=new stdClass();
-	$update->id=$grade->id;
-	$update->grade=round($txtgrade,2);
-	$update->comments=$comments;
-	$update->timemodified = time();
+	$grade->grade = round($txtgrade,2);
+	$grade->comments = $comments;
+	$grade->timemodified = time();
 
 	//Compatibilidad con rcontent/report. Actualizamos estado POR_CORREGIR
 	if ($grade->status == "POR_CORREGIR") {
-		$update->status = "CORREGIDO";
+		$grade->status = "CORREGIDO";
 	}
 
-	$ok = update_record('rcontent_grades', $update);
+	$ok = update_record('rcontent_grades', $grade);
 	if (!$ok) {
 		return false;
 	}
