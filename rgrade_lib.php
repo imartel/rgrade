@@ -208,7 +208,7 @@ $groupid = null, $userid, $state = null, $begin = null, $end = null) {
 
 	global $CFG, $DB;
 
-	$sql = "SELECT g.id, g.userid, g.unitid, g.activityid, g.grade/g.maxgrade as grade, ".
+	$sql = "SELECT g.id, g.userid, g.unitid, g.activityid, g.grade, ".
 	"g.starttime, g.totaltime , g.attempt, g.urlviewresults, g.comments, g.status ".
 	"FROM {$CFG->prefix}rcontent_grades g ".
 	"INNER JOIN {$CFG->prefix}rcontent rc ON rc.id = g.rcontentid ";
@@ -469,16 +469,18 @@ function rgrade_update_grade($grade, $txtgrade, $comments){
 		return false;
 	}
 
-	$grade->grade = round($txtgrade,2);
-	$grade->comments = $comments;
-	$grade->timemodified = time();
+	$update=new stdClass();
+	$update->id=$grade->id;
+	$update->grade=round($txtgrade,2);
+	$update->comments=$comments;
+	$update->timemodified = time();
 
 	//Compatibilidad con rcontent/report. Actualizamos estado POR_CORREGIR
 	if ($grade->status == "POR_CORREGIR") {
-		$grade->status = "CORREGIDO";
+		$update->status = "CORREGIDO";
 	}
 
-	$ok = $DB->update_record('rcontent_grades', $grade);
+	$ok = $DB->update_record('rcontent_grades', $update);
 	if (!$ok) {
 		return false;
 	}
