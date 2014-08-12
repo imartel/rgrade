@@ -98,14 +98,14 @@ function rgrade_get_string($key, $args = null){
 
 /**
  * Devuelve la cadena SQL para filtrar todos los usuarios de un curso que tienen
- * que aparecer en el libro de calificaciones. 
- * Los usuarios necesitan tener al menos uno de los roles en un curso definidos 
+ * que aparecer en el libro de calificaciones.
+ * Los usuarios necesitan tener al menos uno de los roles en un curso definidos
  * en /admin/settings.php para aparecer en el libro de calificaciones del curso.
  */
 function _rgrade_get_rol_student_restriction($courseid){
 	global $CFG;
 
-	$context = get_context_instance(CONTEXT_COURSE, $courseid);
+	$context = context_course::instance($courseid);
 
 	return "JOIN (
        SELECT DISTINCT ra.userid
@@ -134,7 +134,7 @@ function rgrade_check_capability($c) {
 
 	global $COURSE;
 
-	$context = get_context_instance(CONTEXT_COURSE, $COURSE->id);
+	$context = context_course::instance($COURSE->id);
 
 	return has_capability($c, $context);
 }
@@ -351,7 +351,7 @@ function rgrade_last_units_with_grades($courseid, $bookid, $groupid = null) {
 			$toreturn[($o0 < $o1) ? 0 : 1] = $unit;
 		}
 	}
-	
+
 	if(!$toreturn[0]){
 		return array();
 	}
@@ -464,7 +464,7 @@ function rgrade_get_grades_by_id($ids){
  */
 function rgrade_update_grade($grade, $txtgrade, $comments){
 	global $DB;
-	
+
 	if(!$grade){
 		return false;
 	}
