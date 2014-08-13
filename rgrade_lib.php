@@ -34,11 +34,11 @@ function rgrade_get_rcontent_grade($gradeid){
  */
 function rgrade_get_all_books($courseid) {
 
-	global $CFG, $DB;
+	global $DB;
 
 	$sql = "SELECT b.id, b.name
-	FROM {$CFG->prefix}rcontent c
-	INNER JOIN {$CFG->prefix}rcommon_books b
+	FROM {rcontent} c
+	INNER JOIN {rcommon_books} b
 	ON c.bookid = b.id
 	WHERE c.course = $courseid
 	GROUP BY b.id, b.name
@@ -79,9 +79,9 @@ function rgrade_get_book_from_course($courseid, $bookid) {
  */
 function rgrade_get_units_from_book($bookid){
 
-	global $CFG, $DB;
+	global $DB;
 
-	$sql = "select id, name, code from  {$CFG->prefix}rcommon_books_units
+	$sql = "select id, name, code from  {rcommon_books_units}
 	where bookid = $bookid order by sortorder, timecreated";
 
 	return $DB->get_records_sql($sql);
@@ -109,7 +109,7 @@ function _rgrade_get_rol_student_restriction($courseid){
 
 	return "JOIN (
        SELECT DISTINCT ra.userid
-       FROM {$CFG->prefix}role_assignments ra
+       FROM {role_assignments} ra
        WHERE ra.roleid IN ($CFG->gradebookroles)
        AND ra.contextid = {$context->id}
        ) roles ON roles.userid = u.id ";
@@ -123,7 +123,7 @@ function rgrade_get_all_students($courseid){
 
 	global $CFG, $DB;
 
-	$sql  = "SELECT u.id, u.lastname, u.firstname FROM {$CFG->prefix}user u ";
+	$sql  = "SELECT u.id, u.lastname, u.firstname FROM {user} u ";
 	$sql .= _rgrade_get_rol_student_restriction($courseid);
 	$sql .= "ORDER BY u.lastname, u.firstname, u.id";
 
@@ -150,9 +150,9 @@ function rgrade_get_groups_studentsid($courseid){
 	global $CFG, $DB;
 
 	$sql = "SELECT u.id as userid, g.id as groupid, g.name as groupname
-	FROM {$CFG->prefix}user u
-	JOIN {$CFG->prefix}groups_members gm ON gm.userid = u.id
-	JOIN {$CFG->prefix}groups g ON g.id = gm.groupid ";
+	FROM {user} u
+	JOIN {groups_members} gm ON gm.userid = u.id
+	JOIN {groups} g ON g.id = gm.groupid ";
 
 	$sql .= _rgrade_get_rol_student_restriction($courseid);
 
@@ -410,11 +410,11 @@ function _rgrade_add_where_restriction($param, $value, $op = ''){
  */
 function rgrade_get_recordset_activities($bookid, $unitid = null) {
 
-	global $CFG, $DB;
+	global $DB;
 
 	$sql = "SELECT a.*, u.code as unitcode, u.name as unitname
-	FROM {$CFG->prefix}rcommon_books_activities a
-	INNER JOIN {$CFG->prefix}rcommon_books_units u ON a.unitid = u.id
+	FROM {rcommon_books_activities} a
+	INNER JOIN {rcommon_books_units} u ON a.unitid = u.id
 	WHERE a.bookid = $bookid ";
 
 	if($unitid) {
