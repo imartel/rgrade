@@ -1,16 +1,18 @@
 <?php
+define('AJAX_SCRIPT', true);
+define('NO_DEBUG_DISPLAY', true);
 
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once("../../config.php");
 require_once('rgrade_lib.php');
-
+global $DB;
 $courseid = optional_param('courseid', '', PARAM_NUMBER);
 if(!$courseid) {
 	rgrade_json_error("Course required");
 }
 
-$course = get_record('course', 'id', $courseid);
+$course = rgrade_get_course($courseid);
 if(!$course) {
 	rgrade_json_error("Course does not exists: $courseid");
 }
@@ -25,23 +27,21 @@ $data = array();
 
 $data['students'] = array();
 
-$rs = rgrade_get_all_students($courseid);
-while($student = rs_fetch_next_record($rs)) {
 
+$students = rgrade_get_all_students($courseid);
+foreach ($students as $student) {
 	$sid = (int) $student->id;
-	
+
 	$data['students'][] = array(
 		'id' => $sid,
 		'lastname' => $student->lastname,
-		'firstname' => $student->firstname);	
+		'firstname' => $student->firstname);
 }
-rs_close($rs);
-
 
 $data['groups'] = array();
 
-$rs = rgrade_get_groups_studentsid($courseid);
-while($group = rs_fetch_next_record($rs)) {
+$groups = rgrade_get_groups_studentsid($courseid);
+foreach ($groups as $group) {
 
 	$gid = (int) $group->groupid;
 
@@ -56,16 +56,14 @@ while($group = rs_fetch_next_record($rs)) {
 	$data['groups'][$gid]['studentids'][] = (int) $group->userid;
 }
 $data['groups'] = array_values($data['groups']);
-rs_close($rs);
+
 
 $data['scores'] = $ENUM_SCORES;
 $data['status'] = $ENUM_STATUS;
-
-$rs = rgrade_get_recordset_activities($book->id);
 $data['book'] = array('id' => $book->id, 'name' => $book->name, 'units' => array());
 
-while($activity = rs_fetch_next_record($rs)) {
-
+$activities = rgrade_get_recordset_activities($book->id);
+foreach ($activities as $activity) {
 	$uid = (int) $activity->unitid;
 
 	if(!isset($data['book']['units'][$uid])){
@@ -83,7 +81,5 @@ while($activity = rs_fetch_next_record($rs)) {
 }
 
 $data['book']['units'] = array_values($data['book']['units']);
-
-rs_close($rs);
 
 echo json_encode($data);

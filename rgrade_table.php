@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config.php");
+require_once('../../config.php');
 require_once('rgrade_lib.php');
 
 // Opt. Avoid default javascript inclusion
@@ -8,58 +8,59 @@ $CFG->javascript = "javascript.php";
 
 $courseid = required_param('courseid', PARAM_NUMBER);
 $bookid = required_param('bookid', PARAM_NUMBER);
-
-$course = get_record('course', 'id', $courseid);
+$course = rgrade_get_course($courseid);
 if(!$course) {
 	error('Course not valid');
 }
-
 $book = rgrade_get_book_from_course($courseid, $bookid);
 if(!$book) {
 	error('Book not valid');
 }
 
-require_login($course->id, false);
+require_login($courseid, false);
+$PAGE->set_url(new moodle_url('/blocks/rgrade/rgrade_table.php', array('courseid' => $courseid, 'bookid' => $bookid)));
 
 $tshourly = "";
 
-$jspath = $CFG->wwwroot.'/blocks/rgrade/js';
-
-require_js(array(
-		$jspath.'/jquery-1.7.1.min.js',
-		$jspath.'/jquery.ba-bbq.js',
-		$jspath.'/handlebars-1.0.0.beta.6.js', $jspath.'/i18n.js', $jspath.'/css.js',
-		$jspath.'/jquery.cookie.js',
-		$jspath.'/jquery.simplemodal.1.4.2.min.js'));
-
-$csspath = $CFG->wwwroot.'/blocks/rgrade/css';
-
-$CFG->stylesheets[] = $csspath.'/custom-theme/jquery-ui-1.8.18.custom.css';
-$CFG->stylesheets[] = $csspath.'/rgrade.css';
-
-$mod_title = rgrade_get_string("rgrade");
-$mod_url = "#";
-
-$page_title = $mod_title . ": " . $course->shortname . " | " . $book->name;
-$title = $mod_title . ": " . $course->fullname . " | " . $book->name;
-
-$navlinks = array(
-		array('name' => $mod_title, 'link' => $mod_url, 'type' => 'title'),
-		array('name' => $book->name, 'type' => 'title')
-);
-
-print_header($page_title, $title, build_navigation($navlinks));
-
+// Init params
 $groupid = optional_param('groupid', '', PARAM_NUMBER);
 
 $unitid = rgrade_last_units_with_grades($courseid, $bookid, $groupid);
 
 $studentid = null;
-
 if (!rgrade_check_capability("moodle/grade:viewall")) {
 	$studentid = $USER->id;
 }
 
+$mod_title = rgrade_get_string("rgrade");
+$mod_url = "#";
+$page_title = $mod_title . ": " . $course->shortname . " | " . $book->name;
+$title = $mod_title . ": " . $course->fullname . " | " . $book->name;
+
+$PAGE->set_heading($page_title);
+$PAGE->set_title($title);
+
+$jspath = $CFG->wwwroot.'/blocks/rgrade/js';
+$PAGE->requires->js(new moodle_url($jspath.'/jquery-1.7.1.min.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/jquery.ba-bbq.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/handlebars-1.0.0.beta.6.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/i18n.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/css.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/jquery.cookie.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/jquery.simplemodal.1.4.2.min.js'));
+$PAGE->requires->js(new moodle_url($jspath.'/rgrade.js?v='.$tshourly));
+
+$csspath = $CFG->wwwroot.'/blocks/rgrade/css';
+$PAGE->requires->css(new moodle_url($csspath.'/custom-theme/jquery-ui-1.8.18.custom.css'));
+$PAGE->requires->css(new moodle_url($csspath.'/rgrade.css'));
+
+$PAGE->navbar->add($mod_title, new moodle_url($mod_url));
+$PAGE->navbar->add($book->name, null);
+
+//Compatibilitat css moodle 1.9
+$PAGE->add_body_class("blocks-rgrade");
+
+echo $OUTPUT->header();
 ?>
 
 <form id="rgrade_search_form"
@@ -159,7 +160,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 <div id="back_print_excel">
 <input id="submit_print" type="button" name="print" value="{{I18n "Print"}}" class="button print"/>
 <input id="submit_excel" type="button" name="export" value="{{I18n "Excel Export"}}" class="button excel"/>
-<a id="button_book" href="#view=book" title=""  class="button">{{I18n "Book data"}}</a>
+<a id="button_book" href="#view=book" title=""  class="button btn btn-info">{{I18n "Book data"}}</a>
 <input id="submit_back" type="button" name="back" value="{{I18n "Back"}}" class="button back"/>
 </div>
 
@@ -169,17 +170,13 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 
 <script type="text/javascript">
 	var language = "<?php echo current_language();?>";
-	
+
 	var courseid = "<?php echo $courseid; ?>";
 	var bookid = "<?php echo $bookid; ?>";
 
 	var unitid = <?php echo json_encode($unitid); ?>;
-	var studentid = "<?php echo $studentid; ?>";  
+	var studentid = "<?php echo $studentid; ?>";
 </script>
-
-<script
-	type="text/javascript"
-	src="<?php echo $jspath.'/rgrade.js?v='.$tshourly ?>"></script>
 
 <div id="layer-grades"></div>
 
@@ -227,7 +224,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 				<tr class="secondline">
 					<td class="icon">&nbsp;</td>
 					<td colspan="5" class="comments"><textarea name="comments">{{comments}}</textarea></td>
-				</tr>				
+				</tr>
 				</table>
 				</form>
 				{{/if}}
@@ -288,7 +285,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 			<em>{{#if unit}}<span class="activity {{activityType content.code}}">{{I18n "Activity"}}</span>{{else}}{{I18n "Unit"}}{{/if}}</em>
 			<span class="title">{{content.name}}</span>
 		</div>
-	{{/if}}	
+	{{/if}}
 	<hr/>
 	{{#if content}}<div class="code">{{content.code}}</div>{{/if}}
 </div>
@@ -316,7 +313,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 		{{/if}}
 		{{#if content}}
 			<div class="content"><em>{{I18n "Unit"}}</em> <span class="title">{{content.name}}</span></div>
-		{{/if}}		
+		{{/if}}
 	</div>
 
 	{{#if contentUserData}}
@@ -328,7 +325,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 		<div class="grades-unit-{{content.id}}">{{> contentGrades}}</div>
 	{{/if}}
 
-	
+
 	{{#if activities}}
 	<div class="subtitle activities"><em>{{I18n "Activities"}}</em></div>
 	<div class="grades">
@@ -425,7 +422,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 				<div class="unit-activity">
 					<div class="titol-code clearfix">
 						<h2><span class="activity {{activityType code}}">{{name}}</h2>
-						{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}			
+						{{#if grades.score}}<div class="aggregate"><em>{{I18n ../../../../scoreid}}</em> <strong>{{formatScore grades.score}}</strong></div>{{/if}}
 					</div>
 					<em class="code">{{code}}</em>
 					{{> grades}}
@@ -476,7 +473,7 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 
 <div id="layer-unit_message">
 <span><?php echo rgrade_get_string('alert_units_table');?></span>
-<form id="form_hide_unit_msg" action="#"> 
+<form id="form_hide_unit_msg" action="#">
 	<input type="checkbox" id="hide_msg" value="1" name="hide_msg"/>
 	<label for="hide_msg"><strong><?php echo rgrade_get_string('alert_units_table_hide');?></strong></label>
 	<div class="container-button">
@@ -492,4 +489,4 @@ if (!rgrade_check_capability("moodle/grade:viewall")) {
 		target="_blank">Manual d'usuari</a>
 </div>
 
-<?php print_footer(); ?>
+<?php print $OUTPUT->footer(); ?>

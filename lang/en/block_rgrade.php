@@ -1,4 +1,5 @@
 <?php
+$string['pluginname'] = 'Remote contents\' grades';
 $string['rgrade'] = 'Remote contents\' grades';
 $string['all_groups'] = 'All groups';
 $string['go'] = 'Go';

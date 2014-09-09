@@ -1,4 +1,7 @@
 <?php
+define('AJAX_SCRIPT', true);
+define('NO_DEBUG_DISPLAY', true);
+
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once("../../config.php");
@@ -7,7 +10,7 @@ require_once('rgrade_lib.php');
 $courseid = optional_param('courseid', '', PARAM_NUMBER);
 $bookid = optional_param('bookid', '', PARAM_NUMBER);
 
-if(!$courseid || !$course = get_record('course', 'id', $courseid)) {
+if(!$courseid || !$course = rgrade_get_course($courseid)) {
 	rgrade_json_error('Course not valid');
 }
 
@@ -23,15 +26,15 @@ $stateid = optional_param('stateid', '', PARAM_TEXT);
 $begin = optional_param('begin', '', PARAM_TEXT);
 $end = optional_param('end', '', PARAM_TEXT);
 
-$rs = rgrade_get_counts($courseid, $bookid, $groupid, $studentid, $stateid, $begin, $end);
+$grades = rgrade_get_counts($courseid, $bookid, $groupid, $studentid, $stateid, $begin, $end);
 
-if (!$rs) {
+if (!$grades) {
 	rgrade_json_error("Error SQL");
 }
 
 $data = array();
 
-while($grade = rs_fetch_next_record($rs)) {
+foreach($grades as $grade) {
 
 	$unitid = $grade->unitid;
 	$activityid = $grade->activityid;
@@ -43,6 +46,5 @@ while($grade = rs_fetch_next_record($rs)) {
 	$data[$unitid][$activityid] = (int)$grade->total;
 }
 
-rs_close($rs);
 
 echo json_encode($data);

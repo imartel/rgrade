@@ -1,4 +1,5 @@
 <?php
+$string['pluginname'] = 'Calificaciones contenidos remotos';
 $string['rgrade'] = 'Calificaciones contenidos remotos';
 $string['all_groups'] = 'Todos los grupos';
 $string['go'] = 'Accede';

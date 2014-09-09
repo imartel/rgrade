@@ -5,8 +5,15 @@ class block_rgrade extends block_base {
 
 	function init() {
 		$this->title = rgrade_get_string('rgrade');
-		$this->version = 2012032200;
 	}
+	
+	function instance_allow_multiple() {
+        return false;
+    }
+    
+    function has_config() {
+        return false;
+    }
 
 	public function get_content() {
 
@@ -27,7 +34,7 @@ class block_rgrade extends block_base {
 		$books = rgrade_get_all_books($COURSE->id);
 		if(!empty($books)){
 
-			$text .="<label for='fbook'><span>".rgrade_get_string('book')."</span>";
+			$text .="<label for='fbook'><span>".rgrade_get_string('book')."</span><br/>";
 			$text .="<select name='bookid' id='fbook' class='fbook' style='width:100%;'>";
 			foreach($books as $book){
 				$text .= "<option value='".$book->id."'>".$book->name."</option>";
@@ -41,7 +48,7 @@ class block_rgrade extends block_base {
 
 			if(!empty($groups)) {
 
-				$text .="<label for='fgroup'><span>".rgrade_get_string('group')."</span>";
+				$text .="<br/><label for='fgroup'><span>".rgrade_get_string('group')."</span><br/>";
 				$text .="<select name='groupid' id='fgroup' class='fgroup' style='width:100%;'>";
 				$text .= "<option value=''> -- ".rgrade_get_string('all_groups')." -- </option>";
 

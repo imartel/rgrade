@@ -1,4 +1,7 @@
 <?php
+define('AJAX_SCRIPT', true);
+define('NO_DEBUG_DISPLAY', true);
+
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once("../../config.php");
@@ -6,7 +9,7 @@ require_once('rgrade_lib.php');
 
 $courseid = optional_param('courseid', '', PARAM_NUMBER);
 
-if(!$courseid || ! $course = get_record('course', 'id', $courseid)) {
+if(!$courseid || ! $course = rgrade_get_course($courseid)) {
 	rgrade_json_error('Course not valid');
 }
 
