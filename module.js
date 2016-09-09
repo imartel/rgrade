@@ -4,8 +4,9 @@ M.local_block_rgrade={
    
     init : function(Y, courseid, bookid, unitid, studentid, language) {
       this.Y = Y;
-      
-      function Rgrade(courseid, bookid, unitid, studentid) {
+      unitid = $.parseJSON(unitid);
+
+      function Rgrade(courseid, bookid, unitid, studentid, language) {
         var ACTIVITY = 'ACTIVITY';
 
         var UNIT = 'UNIT';
@@ -1065,11 +1066,8 @@ M.local_block_rgrade={
           } // dataExport
 
           function showTable(nop) {
-
             for ( var i = 0; i < options.unitid.length; i++) {
-
               var unit = unitsIndex[options.unitid[i]];
-
               addUnitToTable(unit);
             }
 
@@ -2084,6 +2082,6 @@ M.local_block_rgrade={
       };
 
       // Parámetros mínimos: curso y libro
-      Rgrade(courseid, bookid, unitid, studentid);
+      Rgrade(courseid, bookid, unitid, studentid, language);
     },
   }

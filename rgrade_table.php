@@ -41,7 +41,7 @@ $PAGE->set_heading($page_title);
 $PAGE->set_title($title);
 
 $jspath = $CFG->wwwroot.'/blocks/rgrade/js';
-//$PAGE->requires->js(new moodle_url($jspath.'/jquery-1.7.1.min.js'), 'rgrade_table');
+$PAGE->requires->js(new moodle_url($jspath.'/jquery-1.7.1.min.js'), 'rgrade_table');
 $PAGE->requires->js(new moodle_url($jspath.'/jquery.ba-bbq.js'), 'rgrade_table');
 $PAGE->requires->js(new moodle_url($jspath.'/handlebars-1.0.0.beta.6.js'), 'rgrade_table');
 $PAGE->requires->js(new moodle_url($jspath.'/i18n.js'), 'rgrade_table');
@@ -51,16 +51,10 @@ $PAGE->requires->js(new moodle_url($jspath.'/jquery.simplemodal.1.4.2.min.js'), 
 
 $js_module = array(
   'name' => 'local_block_rgrade',
-  'fullpath' => '/blocks/rgrade/module.js',
-  'requires' => array("jquery"));
-
+  'fullpath' => '/blocks/rgrade/module.js');
 $js_variables  = array(
 	$courseid, $bookid, json_encode($unitid), $studentid, current_language());
-
 $PAGE->requires->js_init_call('M.local_block_rgrade.init', $js_variables, false, $js_module);
-
-
-//$PAGE->requires->js(new moodle_url($jspath.'/rgrade.js?v='.$tshourly), 'rgrade_table');
 
 $csspath = $CFG->wwwroot.'/blocks/rgrade/css';
 $PAGE->requires->css(new moodle_url($csspath.'/custom-theme/jquery-ui-1.8.18.custom.css'));
